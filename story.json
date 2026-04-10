@@ -1,0 +1,44 @@
+{
+  "config": {
+    "gameTitle": "实验室的秘密",
+    "initialNode": "scene_01"
+  },
+  "assets": {
+    "images": {
+      "bg_lab": "bg_lab.jpg",
+      "girl_sad": "char_girl_sad.png",
+      "girl_happy": "char_girl_happy.png"
+    }
+  },
+  "nodes": {
+    "scene_01": {
+      "speaker": "我",
+      "text": "当我推开实验室沉重的大门时，灰尘在阳光下飞舞。那是她第一次回头看我。",
+      "background": "bg_lab",
+      "character": { "id": "girl_sad", "position": "center", "animation": "fade-in" },
+      "next": "choice_01"
+    },
+    "choice_01": {
+      "speaker": "少女",
+      "text": "“你...也是来终结这一切的吗？”她的眼神里透着绝望。",
+      "options": [
+        { "label": "安慰她", "next": "path_happy" },
+        { "label": "沉默地走近", "next": "path_sad" }
+      ]
+    },
+    "path_happy": {
+      "speaker": "我",
+      "text": "“不，我是来带你离开这里的。”",
+      "character": { "id": "girl_happy", "position": "center", "animation": "scale-up" },
+      "next": "end_01"
+    },
+    "path_sad": {
+      "speaker": "少女",
+      "text": "她低下了头，发丝遮住了眼睛。那是比实验室的空气更沉重的寂静。",
+      "character": { "id": "girl_sad", "position": "center", "animation": "dim" },
+      "next": "end_02"
+    },
+    "end_01": { "text": "【结局：破晓】你带她走出了阴霾。", "next": null },
+    "end_02": { "text": "【结局：囚笼】实验室的门再次关上。", "next": null }
+  }
+}
