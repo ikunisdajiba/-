@@ -4,14 +4,23 @@
     "subtitle": "云端测试版",
     "version": "1.0"
   },
-  "assets": {
-    "images": {
-      "bg_lab": "https://raw.githubusercontent.com/ikunisdajiba/-/master/bg_lab.jpg",
-      "girl_sad": "https://raw.githubusercontent.com/ikunisdajiba/-/master/char_girl_sad.png",
-      "girl_happy": "https://raw.githubusercontent.com/ikunisdajiba/-/master/char_girl_happy.png"
+  "assets": [
+    {
+      "key": "bg_lab",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/bg_lab.jpg",
+      "type": "image"
     },
-    "audio": {}
-  },
+    {
+      "key": "girl_sad",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/char_girl_sad.png",
+      "type": "image"
+    },
+    {
+      "key": "girl_happy",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/char_girl_happy.png",
+      "type": "image"
+    }
+  ],
   "nodes": [
     {
       "id": "scene_01",
