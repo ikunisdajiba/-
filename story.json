@@ -1,39 +1,54 @@
 {
   "metadata": {
-    "title": "移动端测试剧本",
-    "subtitle": "序章",
+    "title": "我的游戏",
+    "subtitle": "第一章",
     "version": "1.0.0",
-    "author": "匿名"
+    "author": "制作人"
   },
   "assets": [
     {
-      "key": "campus",
-      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/campus.jpeg",
+      "key": "便利店",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/便利店.png",
       "type": "image"
     },
     {
-      "key": "ml_ordinary",
-      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/ml_ordinary.jpeg",
+      "key": "捡东西",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/捡东西.png",
+      "type": "image"
+    },
+    {
+      "key": "普通",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/普通.png",
+      "type": "image"
+    },
+    {
+      "key": "害羞",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/害羞.png",
+      "type": "image"
+    },
+    {
+      "key": "晕倒",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/晕倒.png",
       "type": "image"
     }
   ],
   "nodes": [
     {
-      "id": "scene_1",
-      "speaker": "cml",
-      "text": "哦学妹 你好吗？",
-      "bg": "campus",
+      "id": "scene_7767",
+      "speaker": "旁白",
+      "text": "傍晚的校园便利店门口，晚风卷着几片落叶飘来，暖黄的店灯把门口照得昏昏的。你刚买完冰饮料推门出来，没注意迎面走来的人，肩膀狠狠撞在一起，你手里的饮料差点掉在地上，对方怀里的零食撒了两包在台阶上",
+      "bg": "便利店",
       "sprites": {
         "left": null,
-        "center": "ml_ordinary",
+        "center": "晕倒",
         "right": null,
-        "active": "left"
+        "active": null
       },
       "bgm": null,
       "se": null,
+      "effect": null,
       "options": null,
-      "next": "__title__",
-      "effect": null
+      "next": "__title__"
     }
   ]
 }
