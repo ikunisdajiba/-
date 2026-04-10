@@ -1,44 +1,120 @@
 {
-  "config": {
-    "gameTitle": "实验室的秘密",
-    "initialNode": "scene_01"
+  "metadata": {
+    "title": "实验室的秘密",
+    "subtitle": "云端测试版",
+    "version": "1.0"
   },
-  "assets": {
-    "images": {
-      "bg_lab": "bg_lab.jpg",
-      "girl_sad": "char_girl_sad.png",
-      "girl_happy": "char_girl_happy.png"
+  "assets": [
+    {
+      "key": "bg_lab",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/bg_lab.jpg",
+      "type": "image"
+    },
+    {
+      "key": "girl_sad",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/char_girl_sad.png",
+      "type": "image"
+    },
+    {
+      "key": "girl_happy",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/char_girl_happy.png",
+      "type": "image"
     }
-  },
-  "nodes": {
-    "scene_01": {
+  ],
+  "nodes": [
+    {
+      "id": "scene_01",
       "speaker": "我",
       "text": "当我推开实验室沉重的大门时，灰尘在阳光下飞舞。那是她第一次回头看我。",
-      "background": "bg_lab",
-      "character": { "id": "girl_sad", "position": "center", "animation": "fade-in" },
-      "next": "choice_01"
+      "bg": "bg_lab",
+      "sprites": {
+        "left": null,
+        "center": "girl_sad",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "next": "choice_01",
+      "effect": "none"
     },
-    "choice_01": {
+    {
+      "id": "choice_01",
       "speaker": "少女",
       "text": "“你...也是来终结这一切的吗？”她的眼神里透着绝望。",
+      "bg": "bg_lab",
+      "sprites": {
+        "left": null,
+        "center": "girl_sad",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
       "options": [
-        { "label": "安慰她", "next": "path_happy" },
-        { "label": "沉默地走近", "next": "path_sad" }
+        { "text": "安慰她", "next": "path_happy" },
+        { "text": "沉默地走近", "next": "path_sad" }
       ]
     },
-    "path_happy": {
+    {
+      "id": "path_happy",
       "speaker": "我",
       "text": "“不，我是来带你离开这里的。”",
-      "character": { "id": "girl_happy", "position": "center", "animation": "scale-up" },
-      "next": "end_01"
+      "bg": "bg_lab",
+      "sprites": {
+        "left": null,
+        "center": "girl_happy",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "next": "end_01",
+      "effect": "flash"
     },
-    "path_sad": {
+    {
+      "id": "path_sad",
       "speaker": "少女",
       "text": "她低下了头，发丝遮住了眼睛。那是比实验室的空气更沉重的寂静。",
-      "character": { "id": "girl_sad", "position": "center", "animation": "dim" },
-      "next": "end_02"
+      "bg": "bg_lab",
+      "sprites": {
+        "left": null,
+        "center": "girl_sad",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "next": "end_02",
+      "effect": "none"
     },
-    "end_01": { "text": "【结局：破晓】你带她走出了阴霾。", "next": null },
-    "end_02": { "text": "【结局：囚笼】实验室的门再次关上。", "next": null }
-  }
+    {
+      "id": "end_01",
+      "speaker": "系统",
+      "text": "【结局：破晓】你带她走出了阴霾。",
+      "bg": "bg_lab",
+      "sprites": {
+        "center": "girl_happy",
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "next": null,
+      "effect": "none"
+    },
+    {
+      "id": "end_02",
+      "speaker": "系统",
+      "text": "【结局：囚笼】实验室的门再次关上。",
+      "bg": "bg_lab",
+      "sprites": {
+        "center": "girl_sad",
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "next": null,
+      "effect": "none"
+    }
+  ]
 }
