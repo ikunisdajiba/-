@@ -6,9 +6,9 @@
   },
   "assets": {
     "images": {
-      "bg_lab": "https://raw.githubusercontent.com/ikunisdajiba/-/main/bg_lab.jpg",
-      "girl_sad": "https://raw.githubusercontent.com/ikunisdajiba/-/main/char_girl_sad.png",
-      "girl_happy": "https://raw.githubusercontent.com/ikunisdajiba/-/main/char_girl_happy.png"
+      "bg_lab": "https://raw.githubusercontent.com/ikunisdajiba/-/master/bg_lab.jpg",
+      "girl_sad": "https://raw.githubusercontent.com/ikunisdajiba/-/master/char_girl_sad.png",
+      "girl_happy": "https://raw.githubusercontent.com/ikunisdajiba/-/master/char_girl_happy.png"
     },
     "audio": {}
   },
@@ -109,4 +109,3 @@
     }
   ]
 }
-
