@@ -1,38 +1,33 @@
 {
   "metadata": {
-    "title": "重生之和无敌大肌肉男恋爱然后爱上身价9块的霸道总裁",
+    "title": "移动端测试剧本",
     "subtitle": "序章",
     "version": "1.0.0",
     "author": "匿名"
   },
   "assets": [
     {
-      "key": "0003",
-      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/0003.jpeg",
+      "key": "campus",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/campus.jpeg",
       "type": "image"
     },
     {
-      "key": "0001",
-      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/0001.jpeg",
-      "type": "image"
-    },
-    {
-      "key": "0002",
-      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/0002.jpeg",
+      "key": "ml_ordinary",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/ml_ordinary.jpeg",
       "type": "image"
     }
   ],
   "nodes": [
     {
       "id": "scene_1",
-      "speaker": "我",
-      "text": "学长……你好吗",
-      "bg": "0002",
+      "speaker": "cml",
+      "text": "哦学妹 你好吗？",
+      "bg": "campus",
       "sprites": {
-        "left": "0003",
-        "center": null,
-        "right": "0001",
-        "active": null
+        "left": null,
+        "center": "ml_ordinary",
+        "right": null,
+        "active": "left"
       },
       "bgm": null,
       "se": null,
