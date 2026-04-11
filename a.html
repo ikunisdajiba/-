@@ -1,0 +1,2271 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>GalGame Engine - JSON驱动视觉小说框架</title>
+<style>
+/* ============================================
+   全局样式重置与基础设定
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@font-face {
+    font-family: 'GameFont';
+    src: local('Noto Sans SC'), local('Microsoft YaHei'), local('PingFang SC');
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'GameFont', sans-serif;
+}
+
+/* ============================================
+   游戏容器 - 16:9 自适应
+   ============================================ */
+#game-container {
+    position: relative;
+    width: 100vw;
+    height: 56.25vw; /* 16:9 */
+    max-height: 100vh;
+    max-width: 177.78vh; /* 16:9 */
+    margin: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    overflow: hidden;
+    background: #0a0a0a;
+}
+
+/* ============================================
+   加载界面
+   ============================================ */
+#loading-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0c0c1d 0%, #1a1a3e 50%, #0c0c1d 100%);
+    transition: opacity 0.8s ease;
+}
+
+#loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+#loading-screen h1 {
+    color: #e8d5f5;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(180, 130, 255, 0.5);
+    letter-spacing: 0.15em;
+}
+
+#loading-screen .subtitle {
+    color: rgba(200, 180, 220, 0.7);
+    font-size: clamp(0.7rem, 1.5vw, 1rem);
+    margin-bottom: 2rem;
+    letter-spacing: 0.3em;
+}
+
+#progress-bar-container {
+    width: 60%;
+    max-width: 500px;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+#progress-bar {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #a78bfa, #f0abfc, #a78bfa);
+    background-size: 200% 100%;
+    animation: shimmer 2s ease infinite;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+#progress-text {
+    color: rgba(200, 180, 220, 0.8);
+    font-size: clamp(0.6rem, 1.2vw, 0.85rem);
+    margin-bottom: 2rem;
+}
+
+#start-btn {
+    padding: 0.8em 3em;
+    font-size: clamp(0.8rem, 1.8vw, 1.1rem);
+    color: #e8d5f5;
+    background: rgba(120, 80, 180, 0.3);
+    border: 1px solid rgba(180, 130, 255, 0.4);
+    border-radius: 30px;
+    cursor: pointer;
+    letter-spacing: 0.2em;
+    transition: all 0.3s ease;
+    opacity: 0.3;
+    pointer-events: none;
+    backdrop-filter: blur(10px);
+}
+
+#start-btn.ready {
+    opacity: 1;
+    pointer-events: auto;
+    animation: pulse-glow 2s ease-in-out infinite;
+}
+
+#start-btn.ready:hover {
+    background: rgba(120, 80, 180, 0.6);
+    border-color: rgba(200, 160, 255, 0.8);
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(160, 120, 255, 0.3);
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(160, 120, 255, 0.2); }
+    50% { box-shadow: 0 0 25px rgba(160, 120, 255, 0.4); }
+}
+
+/* ============================================
+   背景层 - 双层交叉淡入淡出
+   ============================================ */
+.bg-layer {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    transition: opacity 1.2s ease;
+}
+
+#bg-layer-a { z-index: 1; opacity: 1; }
+#bg-layer-b { z-index: 2; opacity: 0; }
+
+/* ============================================
+   立绘层
+   ============================================ */
+#sprite-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+
+.sprite {
+    position: absolute;
+    bottom: 0;
+    height: 90%;
+    max-width: 45%;
+    object-fit: contain;
+    object-position: bottom;
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.3));
+}
+
+.sprite.entering-left {
+    animation: slideInLeft 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.sprite.entering-center {
+    animation: slideInCenter 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.sprite.entering-right {
+    animation: slideInRight 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.sprite.exiting {
+    animation: fadeOutSprite 0.4s ease forwards;
+}
+
+/* 立绘说话时高亮，其他暗淡 */
+.sprite.speaking { filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.3)) brightness(1); }
+.sprite.dimmed { filter: drop-shadow(2px 4px 8px rgba(0,0,0,0.3)) brightness(0.6); }
+
+#sprite-left { left: 2%; }
+#sprite-center { left: 50%; transform: translateX(-50%); }
+#sprite-right { right: 2%; }
+
+@keyframes slideInLeft {
+    from { transform: translateX(-80px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInCenter {
+    from { transform: translateX(-50%) translateY(40px); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+@keyframes slideInRight {
+    from { transform: translateX(80px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOutSprite {
+    to { opacity: 0; }
+}
+
+/* ============================================
+   对话框层 - 毛玻璃效果
+   ============================================ */
+#dialog-layer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 0 3% 2% 3%;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#dialog-layer.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+    pointer-events: none;
+}
+
+#dialog-box {
+    position: relative;
+    background: rgba(10, 5, 30, 0.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    border: 1px solid rgba(180, 150, 255, 0.15);
+    border-radius: 16px;
+    padding: 1.2em 1.8em 1em 1.8em;
+    min-height: 140px;
+    cursor: pointer;
+    box-shadow:
+        0 -4px 30px rgba(100, 60, 180, 0.1),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+#dialog-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: linear-gradient(180deg, rgba(140, 100, 220, 0.05) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+#speaker-name {
+    display: inline-block;
+    color: #d4b8ff;
+    font-size: clamp(0.8rem, 1.6vw, 1.05rem);
+    font-weight: 600;
+    margin-bottom: 0.5em;
+    padding: 0.15em 0.8em;
+    background: rgba(140, 100, 220, 0.2);
+    border-radius: 8px;
+    border: 1px solid rgba(180, 150, 255, 0.15);
+    letter-spacing: 0.1em;
+    min-height: 1.4em;
+}
+
+#speaker-name:empty {
+    display: none;
+}
+
+#dialog-text {
+    color: rgba(240, 235, 255, 0.95);
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+    line-height: 1.85;
+    letter-spacing: 0.05em;
+    min-height: 3em;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+/* 点击继续提示 */
+#continue-indicator {
+    position: absolute;
+    bottom: 0.6em;
+    right: 1.2em;
+    color: rgba(200, 170, 255, 0.6);
+    font-size: 0.7em;
+    animation: blink 1.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 1; }
+}
+
+/* ============================================
+   选项分支层
+   ============================================ */
+#choices-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 60;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(0.6rem, 1.5vw, 1rem);
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(5px);
+}
+
+#choices-layer.active {
+    display: flex;
+}
+
+.choice-btn {
+    padding: 0.8em 3em;
+    min-width: 280px;
+    max-width: 80%;
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+    color: #e8d5f5;
+    background: rgba(30, 15, 60, 0.7);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(180, 150, 255, 0.25);
+    border-radius: 12px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+    text-align: center;
+    font-family: inherit;
+    animation: choiceFadeIn 0.5s ease backwards;
+}
+
+.choice-btn:nth-child(1) { animation-delay: 0.1s; }
+.choice-btn:nth-child(2) { animation-delay: 0.2s; }
+.choice-btn:nth-child(3) { animation-delay: 0.3s; }
+.choice-btn:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes choiceFadeIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.choice-btn:hover {
+    background: rgba(100, 60, 180, 0.5);
+    border-color: rgba(200, 160, 255, 0.6);
+    transform: scale(1.03);
+    box-shadow: 0 0 25px rgba(140, 100, 220, 0.25);
+}
+
+/* ============================================
+   控制按钮栏 (Action Bar)
+   ============================================ */
+#action-bar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 80;
+    display: flex;
+    gap: 2px;
+    padding: 0.4em;
+    background: rgba(10, 5, 30, 0.5);
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 0 12px;
+    border-left: 1px solid rgba(180, 150, 255, 0.1);
+    border-bottom: 1px solid rgba(180, 150, 255, 0.1);
+    transition: opacity 0.3s ease;
+}
+
+#action-bar.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(32px, 4vw, 44px);
+    height: clamp(32px, 4vw, 44px);
+    background: rgba(80, 50, 140, 0.2);
+    border: 1px solid rgba(180, 150, 255, 0.15);
+    border-radius: 8px;
+    color: rgba(200, 180, 230, 0.8);
+    font-size: clamp(0.55rem, 1.1vw, 0.75rem);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-weight: 600;
+    letter-spacing: 0;
+    line-height: 1;
+}
+
+.action-btn:hover {
+    background: rgba(100, 60, 180, 0.4);
+    color: #e8d5f5;
+    border-color: rgba(200, 160, 255, 0.4);
+}
+
+.action-btn.active {
+    background: rgba(140, 80, 220, 0.5);
+    color: #fff;
+    border-color: rgba(200, 160, 255, 0.6);
+    box-shadow: 0 0 10px rgba(140, 100, 220, 0.3);
+}
+
+.action-btn svg {
+    width: 55%;
+    height: 55%;
+    fill: currentColor;
+}
+
+/* ============================================
+   回溯 (Backlog) 面板
+   ============================================ */
+#backlog-panel {
+    position: absolute;
+    inset: 0;
+    z-index: 90;
+    background: rgba(5, 2, 15, 0.85);
+    backdrop-filter: blur(20px);
+    display: none;
+    flex-direction: column;
+    padding: 2em;
+    overflow: hidden;
+}
+
+#backlog-panel.active {
+    display: flex;
+}
+
+#backlog-panel h2 {
+    color: #d4b8ff;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    margin-bottom: 1em;
+    letter-spacing: 0.15em;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+#backlog-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.5em;
+}
+
+#backlog-list::-webkit-scrollbar {
+    width: 4px;
+}
+#backlog-list::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 2px;
+}
+#backlog-list::-webkit-scrollbar-thumb {
+    background: rgba(180, 150, 255, 0.3);
+    border-radius: 2px;
+}
+
+.backlog-entry {
+    padding: 0.6em 0.8em;
+    margin-bottom: 0.4em;
+    border-radius: 8px;
+    background: rgba(60, 40, 100, 0.15);
+    border-left: 3px solid rgba(180, 150, 255, 0.2);
+}
+
+.backlog-entry .bl-speaker {
+    color: #c4a0ff;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-bottom: 0.2em;
+}
+
+.backlog-entry .bl-text {
+    color: rgba(230, 220, 250, 0.8);
+    font-size: 0.85em;
+    line-height: 1.6;
+}
+
+#backlog-close {
+    margin-top: 1em;
+    align-self: center;
+    padding: 0.5em 2em;
+    background: rgba(100, 60, 180, 0.3);
+    border: 1px solid rgba(180, 150, 255, 0.3);
+    border-radius: 20px;
+    color: #d4b8ff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85em;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   存档/读档面板
+   ============================================ */
+#save-load-panel {
+    position: absolute;
+    inset: 0;
+    z-index: 90;
+    background: rgba(5, 2, 15, 0.88);
+    backdrop-filter: blur(20px);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    padding: 2em;
+}
+
+#save-load-panel.active {
+    display: flex;
+}
+
+#save-load-panel h2 {
+    color: #d4b8ff;
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    margin-bottom: 0.5em;
+    letter-spacing: 0.15em;
+}
+
+#sl-tabs {
+    display: flex;
+    gap: 0.5em;
+    margin-bottom: 1.5em;
+}
+
+.sl-tab {
+    padding: 0.4em 1.5em;
+    background: rgba(80, 50, 140, 0.2);
+    border: 1px solid rgba(180, 150, 255, 0.2);
+    border-radius: 20px;
+    color: rgba(200, 180, 230, 0.7);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85em;
+    transition: all 0.2s ease;
+}
+
+.sl-tab.active {
+    background: rgba(120, 80, 200, 0.4);
+    color: #e8d5f5;
+    border-color: rgba(200, 160, 255, 0.5);
+}
+
+#sl-slots {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.8em;
+    width: 100%;
+    max-width: 700px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5em;
+}
+
+.sl-slot {
+    padding: 1em;
+    background: rgba(40, 25, 80, 0.3);
+    border: 1px solid rgba(180, 150, 255, 0.15);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.sl-slot:hover {
+    background: rgba(80, 50, 140, 0.3);
+    border-color: rgba(200, 160, 255, 0.4);
+}
+
+.sl-slot .slot-title {
+    color: #c4a0ff;
+    font-size: 0.85em;
+    font-weight: 600;
+    margin-bottom: 0.3em;
+}
+
+.sl-slot .slot-info {
+    color: rgba(200, 180, 230, 0.6);
+    font-size: 0.7em;
+}
+
+#sl-close {
+    margin-top: 1em;
+    padding: 0.5em 2em;
+    background: rgba(100, 60, 180, 0.3);
+    border: 1px solid rgba(180, 150, 255, 0.3);
+    border-radius: 20px;
+    color: #d4b8ff;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.85em;
+    letter-spacing: 0.1em;
+    flex-shrink: 0;
+}
+
+/* ============================================
+   状态指示器
+   ============================================ */
+#status-indicators {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 75;
+    display: flex;
+    gap: 0.3em;
+    padding: 0.5em;
+}
+
+.status-badge {
+    display: none;
+    padding: 0.2em 0.6em;
+    font-size: clamp(0.5rem, 1vw, 0.7rem);
+    background: rgba(140, 80, 220, 0.5);
+    border: 1px solid rgba(200, 160, 255, 0.3);
+    border-radius: 12px;
+    color: #e8d5f5;
+    letter-spacing: 0.05em;
+    backdrop-filter: blur(8px);
+}
+
+.status-badge.visible {
+    display: block;
+}
+
+/* ============================================
+   全屏点击区域（用于推进对话）
+   ============================================ */
+#click-area {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    cursor: pointer;
+}
+
+/* ============================================
+   粒子装饰（可选的樱花飘落效果）
+   ============================================ */
+#particles-canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+/* ============================================
+   标题画面
+   ============================================ */
+#title-screen {
+    position: absolute;
+    inset: 0;
+    z-index: 100;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, rgba(20,10,40,0.3) 0%, rgba(10,5,25,0.7) 100%);
+}
+
+#title-screen.active {
+    display: flex;
+}
+
+#title-screen h1 {
+    color: #f0e0ff;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    text-shadow: 0 0 40px rgba(180, 130, 255, 0.4);
+    letter-spacing: 0.2em;
+    margin-bottom: 0.3em;
+}
+
+#title-screen .title-sub {
+    color: rgba(200, 180, 220, 0.6);
+    font-size: clamp(0.6rem, 1.2vw, 0.9rem);
+    letter-spacing: 0.4em;
+    margin-bottom: 3em;
+}
+
+.title-menu-btn {
+    padding: 0.7em 3em;
+    margin: 0.3em 0;
+    min-width: 200px;
+    font-size: clamp(0.8rem, 1.5vw, 1rem);
+    color: #d4b8ff;
+    background: rgba(30, 15, 60, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(180, 150, 255, 0.2);
+    border-radius: 25px;
+    cursor: pointer;
+    letter-spacing: 0.15em;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.title-menu-btn:hover {
+    background: rgba(100, 60, 180, 0.4);
+    border-color: rgba(200, 160, 255, 0.5);
+    transform: scale(1.04);
+    box-shadow: 0 0 20px rgba(140, 100, 220, 0.2);
+}
+
+/* ============================================
+   通知提示
+   ============================================ */
+#notification {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 200;
+    padding: 0.8em 2em;
+    background: rgba(20, 10, 50, 0.85);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(180, 150, 255, 0.3);
+    border-radius: 12px;
+    color: #e8d5f5;
+    font-size: clamp(0.75rem, 1.3vw, 0.95rem);
+    letter-spacing: 0.1em;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+#notification.show {
+    opacity: 1;
+}
+</style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- ===== 加载界面 ===== -->
+    <div id="loading-screen">
+        <h1 id="game-title-loading">樱色物语</h1>
+        <div class="subtitle" id="game-subtitle-loading">SAKURA MONOGATARI</div>
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
+        </div>
+        <div id="progress-text">准备加载资源...</div>
+        <button id="start-btn">开始游戏</button>
+    </div>
+
+    <!-- ===== 背景层（双层用于交叉淡入淡出） ===== -->
+    <div id="bg-layer-a" class="bg-layer"></div>
+    <div id="bg-layer-b" class="bg-layer"></div>
+
+    <!-- ===== 粒子画布 ===== -->
+    <canvas id="particles-canvas"></canvas>
+
+    <!-- ===== 立绘层 ===== -->
+    <div id="sprite-layer">
+        <img id="sprite-left" class="sprite" style="opacity:0" alt="">
+        <img id="sprite-center" class="sprite" style="opacity:0" alt="">
+        <img id="sprite-right" class="sprite" style="opacity:0" alt="">
+    </div>
+
+    <!-- ===== 全屏点击区域 ===== -->
+    <div id="click-area"></div>
+
+    <!-- ===== 对话框层 ===== -->
+    <div id="dialog-layer">
+        <div id="dialog-box">
+            <div id="speaker-name"></div>
+            <div id="dialog-text"></div>
+            <div id="continue-indicator">▼</div>
+        </div>
+    </div>
+
+    <!-- ===== 选项分支层 ===== -->
+    <div id="choices-layer"></div>
+
+    <!-- ===== 标题画面 ===== -->
+    <div id="title-screen">
+        <h1 id="title-main">樱色物语</h1>
+        <div class="title-sub" id="title-sub">SAKURA MONOGATARI</div>
+        <button class="title-menu-btn" id="btn-new-game">新的故事</button>
+        <button class="title-menu-btn" id="btn-continue-game">继续游戏</button>
+    </div>
+
+    <!-- ===== 控制按钮栏 ===== -->
+    <div id="action-bar">
+        <button class="action-btn" id="btn-pause" title="暂停">⏸</button>
+        <button class="action-btn" id="btn-speed" title="速度">1x</button>
+        <button class="action-btn" id="btn-auto" title="自动">▶</button>
+        <button class="action-btn" id="btn-skip" title="快进">⏩</button>
+        <button class="action-btn" id="btn-save" title="存档">💾</button>
+        <button class="action-btn" id="btn-load" title="读档">📂</button>
+        <button class="action-btn" id="btn-back" title="回溯">📜</button>
+        <button class="action-btn" id="btn-hide" title="隐藏">👁</button>
+    </div>
+
+    <!-- ===== 状态指示器 ===== -->
+    <div id="status-indicators">
+        <span class="status-badge" id="badge-auto">AUTO</span>
+        <span class="status-badge" id="badge-skip">SKIP</span>
+        <span class="status-badge" id="badge-pause">PAUSE</span>
+    </div>
+
+    <!-- ===== 回溯面板 ===== -->
+    <div id="backlog-panel">
+        <h2>对话回溯</h2>
+        <div id="backlog-list"></div>
+        <button id="backlog-close">关闭</button>
+    </div>
+
+    <!-- ===== 存档/读档面板 ===== -->
+    <div id="save-load-panel">
+        <h2>存档 / 读档</h2>
+        <div id="sl-tabs">
+            <button class="sl-tab active" data-mode="save">存档</button>
+            <button class="sl-tab" data-mode="load">读档</button>
+        </div>
+        <div id="sl-slots"></div>
+        <button id="sl-close">关闭</button>
+    </div>
+
+    <!-- ===== 通知提示 ===== -->
+    <div id="notification"></div>
+</div>
+
+<script>
+/**
+ * ============================================================================
+ *  GalGame Engine - JSON 驱动视觉小说框架
+ * ============================================================================
+ *
+ *  【如何扩展游戏内容】
+ *
+ *  整个游戏由下方的 gameConfig 对象驱动，你只需修改 JSON 数据即可：
+ *
+ *  1. metadata  - 游戏元数据（标题、副标题、版本等）
+ *  2. assets    - 资源映射表，定义所有图片和音频的 key → URL 映射
+ *  3. nodes     - 剧情节点数组，每个节点代表一帧画面
+ *
+ *  【节点(Node)字段说明】
+ *  {
+ *    id: "唯一标识符",
+ *    speaker: "说话人名字（留空则不显示名牌）",
+ *    text: "对话文本内容",
+ *    bg: "assets中定义的背景图key",
+ *    sprites: {
+ *      left: "左侧立绘key或null",
+ *      center: "中央立绘key或null",
+ *      right: "右侧立绘key或null",
+ *      active: "当前说话人的位置: left/center/right"
+ *    },
+ *    bgm: "背景音乐key（null则不变，'stop'则停止）",
+ *    se: "音效key（null则不播放）",
+ *    options: [                     // 有选项时显示选择界面
+ *      { text: "选项文字", next: "跳转目标节点id" },
+ *      ...
+ *    ],
+ *    next: "下一个节点id（无options时使用）",
+ *    effect: "特效类型: shake/flash/none"
+ *  }
+ *
+ *  【添加新章节的步骤】
+ *  1. 在 assets 中添加新的图片/音频资源映射
+ *  2. 在 nodes 数组中添加新的节点对象
+ *  3. 确保 next 和 options.next 指向正确的节点 id
+ *  4. 刷新页面即可看到新内容
+ *
+ * ============================================================================
+ */
+
+// ============================================================================
+//  游戏配置数据（JSON 驱动核心）
+// ============================================================================
+const gameConfig = {
+    // ---- 游戏元数据 ----
+    metadata: {
+        title: "樱色物语",
+        subtitle: "SAKURA MONOGATARI",
+        version: "1.0.0",
+        author: "GalEngine Studio"
+    },
+
+    // ---- 资源映射表 ----
+    // key: 在节点中引用的名称
+    // url: 实际资源路径（支持本地路径或网络URL）
+    // type: "image" 或 "audio"
+    //
+    // 【扩展方法】直接在此数组中添加新的资源条目即可
+    // 示例：{ key: "bg_beach", url: "images/beach.jpg", type: "image" }
+    assets: [
+        // --- 背景图 ---
+        { key: "bg_school", url: "https://picsum.photos/seed/school/1920/1080", type: "image" },
+        { key: "bg_classroom", url: "https://picsum.photos/seed/classroom/1920/1080", type: "image" },
+        { key: "bg_sakura", url: "https://picsum.photos/seed/sakura/1920/1080", type: "image" },
+        { key: "bg_sunset", url: "https://picsum.photos/seed/sunset/1920/1080", type: "image" },
+        { key: "bg_night", url: "https://picsum.photos/seed/nightsky/1920/1080", type: "image" },
+        { key: "bg_rooftop", url: "https://picsum.photos/seed/rooftop/1920/1080", type: "image" },
+
+        // --- 立绘 ---
+        // 使用占位图片演示，实际项目中替换为角色立绘PNG（透明背景）
+        { key: "char_sakura_normal", url: "https://picsum.photos/seed/girl1/400/800", type: "image" },
+        { key: "char_sakura_happy", url: "https://picsum.photos/seed/girl1h/400/800", type: "image" },
+        { key: "char_sakura_sad", url: "https://picsum.photos/seed/girl1s/400/800", type: "image" },
+        { key: "char_yuki_normal", url: "https://picsum.photos/seed/girl2/400/800", type: "image" },
+        { key: "char_yuki_smile", url: "https://picsum.photos/seed/girl2s/400/800", type: "image" }
+
+        // --- 音频（取消注释并替换为实际音频URL即可启用） ---
+        // { key: "bgm_main", url: "audio/main_theme.mp3", type: "audio" },
+        // { key: "bgm_sad", url: "audio/sad_theme.mp3", type: "audio" },
+        // { key: "se_click", url: "audio/click.wav", type: "audio" },
+        // { key: "se_bell", url: "audio/school_bell.wav", type: "audio" }
+    ],
+
+    // ---- 剧情节点 ----
+    // 每个节点是一帧画面，通过 id 和 next/options 串联成完整剧情
+    //
+    // 【扩展方法】
+    // 1. 复制一个节点模板
+    // 2. 修改 id（确保唯一）
+    // 3. 填写对话内容和资源引用
+    // 4. 设置 next 指向下一个节点，或用 options 创建分支
+    nodes: [
+        {
+            id: "start",
+            speaker: "",
+            text: "春天的风带着樱花的香气，轻轻拂过校园的小径。",
+            bg: "bg_sakura",
+            sprites: { left: null, center: null, right: null, active: null },
+            bgm: null, // "bgm_main" - 取消注释启用BGM
+            se: null,
+            options: null,
+            next: "start_2",
+            effect: null
+        },
+        {
+            id: "start_2",
+            speaker: "",
+            text: "新学期的第一天，一切都充满了期待与未知。",
+            bg: "bg_sakura",
+            sprites: { left: null, center: null, right: null, active: null },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "meet_sakura",
+            effect: null
+        },
+        {
+            id: "meet_sakura",
+            speaker: "",
+            text: "走进校门的那一刻，一个身影映入了我的眼帘——",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_normal", right: null, active: "center" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "meet_sakura_2",
+            effect: null
+        },
+        {
+            id: "meet_sakura_2",
+            speaker: "???",
+            text: "啊……你好！你也是今天入学的新生吗？",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_happy", right: null, active: "center" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "meet_sakura_3",
+            effect: null
+        },
+        {
+            id: "meet_sakura_3",
+            speaker: "",
+            text: "她的笑容如同春日的阳光一般温暖。粉色的长发随风飘动，宛如一幅画。",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_happy", right: null, active: "center" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "choice_1",
+            effect: null
+        },
+        {
+            // 分支选择节点
+            id: "choice_1",
+            speaker: "",
+            text: "面对突如其来的搭话，我应该……",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_normal", right: null, active: "center" },
+            bgm: null,
+            se: null,
+            options: [
+                { text: "友好地回应她", next: "route_a_1" },
+                { text: "害羞地低下头", next: "route_b_1" },
+                { text: "装作没听到", next: "route_c_1" }
+            ],
+            next: null,
+            effect: null
+        },
+        // ---- 路线A：友好回应 ----
+        {
+            id: "route_a_1",
+            speaker: "主人公",
+            text: "嗯，你好！我叫……啊，我是今年的新生。请多指教！",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_happy", right: null, active: null },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "route_a_2",
+            effect: null
+        },
+        {
+            id: "route_a_2",
+            speaker: "樱",
+            text: "太好了！我叫樱，也是新生呢。我们一起去教室吧？",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_happy", right: null, active: "center" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "classroom_scene",
+            effect: null
+        },
+        // ---- 路线B：害羞 ----
+        {
+            id: "route_b_1",
+            speaker: "",
+            text: "我不自觉地低下了头，脸颊微微发烫。",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_normal", right: null, active: null },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "route_b_2",
+            effect: null
+        },
+        {
+            id: "route_b_2",
+            speaker: "???",
+            text: "嘻嘻，你好害羞呀。没关系的，我叫樱！以后我们就是同学了。",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_happy", right: null, active: "center" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "classroom_scene",
+            effect: null
+        },
+        // ---- 路线C：装没听到 ----
+        {
+            id: "route_c_1",
+            speaker: "",
+            text: "我假装没有听到，加快了脚步。但身后传来了急促的脚步声——",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_normal", right: null, active: null },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "route_c_2",
+            effect: null
+        },
+        {
+            id: "route_c_2",
+            speaker: "???",
+            text: "等等我呀！我们好像是同一个班的呢！",
+            bg: "bg_school",
+            sprites: { left: null, center: "char_sakura_happy", right: null, active: "center" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "classroom_scene",
+            effect: null
+        },
+        // ---- 共通路线：教室 ----
+        {
+            id: "classroom_scene",
+            speaker: "",
+            text: "就这样，我和樱一起走进了教室。教室里已经坐了不少人。",
+            bg: "bg_classroom",
+            sprites: { left: "char_sakura_normal", center: null, right: null, active: null },
+            bgm: null,
+            se: null, // "se_bell"
+            options: null,
+            next: "classroom_2",
+            effect: null
+        },
+        {
+            id: "classroom_2",
+            speaker: "樱",
+            text: "哇，好多人啊。我们坐哪里好呢？",
+            bg: "bg_classroom",
+            sprites: { left: "char_sakura_normal", center: null, right: null, active: "left" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "classroom_3",
+            effect: null
+        },
+        {
+            id: "classroom_3",
+            speaker: "",
+            text: "这时，另一个女生走了过来。她有着一头银白色的短发，表情冷淡。",
+            bg: "bg_classroom",
+            sprites: { left: "char_sakura_normal", center: null, right: "char_yuki_normal", active: "right" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "meet_yuki",
+            effect: null
+        },
+        {
+            id: "meet_yuki",
+            speaker: "???",
+            text: "……那个座位是我的。",
+            bg: "bg_classroom",
+            sprites: { left: "char_sakura_normal", center: null, right: "char_yuki_normal", active: "right" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "meet_yuki_2",
+            effect: null
+        },
+        {
+            id: "meet_yuki_2",
+            speaker: "樱",
+            text: "啊，对不起对不起！我们马上让开！",
+            bg: "bg_classroom",
+            sprites: { left: "char_sakura_sad", center: null, right: "char_yuki_normal", active: "left" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "meet_yuki_3",
+            effect: null
+        },
+        {
+            id: "meet_yuki_3",
+            speaker: "???",
+            text: "……没关系。我叫雪。",
+            bg: "bg_classroom",
+            sprites: { left: "char_sakura_normal", center: null, right: "char_yuki_smile", active: "right" },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "chapter_end",
+            effect: null
+        },
+        {
+            id: "chapter_end",
+            speaker: "",
+            text: "就这样，在樱花飘落的季节，我遇见了两个将改变我人生的女孩。\n\n—— 第一章 · 完 ——",
+            bg: "bg_sunset",
+            sprites: { left: "char_sakura_happy", center: null, right: "char_yuki_smile", active: null },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "ending",
+            effect: null
+        },
+        {
+            id: "ending",
+            speaker: "",
+            text: "感谢游玩演示版本！\n\n本框架支持通过修改 gameConfig 中的 JSON 数据来扩展无限的剧情内容。\n\n点击即可返回标题画面。",
+            bg: "bg_night",
+            sprites: { left: null, center: null, right: null, active: null },
+            bgm: null,
+            se: null,
+            options: null,
+            next: "__title__", // 特殊标记：返回标题画面
+            effect: null
+        }
+    ]
+};
+
+// ============================================================================
+//  从 GitHub 拉取最新剧情数据的占位函数
+// ============================================================================
+/**
+ * fetchContent() - 从远程仓库获取最新的游戏配置
+ *
+ * 【使用方法】
+ * 1. 将你的 story.json 上传到 GitHub 仓库
+ * 2. 获取 raw 文件链接，例如：
+ *    https://raw.githubusercontent.com/你的用户名/你的仓库/main/story.json
+ * 3. 取消下方注释，替换 URL
+ * 4. story.json 的格式与 gameConfig 完全一致
+ *
+ * 这样你只需更新 GitHub 上的 JSON 文件，所有玩家刷新页面即可获得最新剧情。
+ *
+ * 【story.json 格式示例】
+ * {
+ *   "metadata": { "title": "...", ... },
+ *   "assets": [ { "key": "...", "url": "...", "type": "..." }, ... ],
+ *   "nodes": [ { "id": "...", "speaker": "...", ... }, ... ]
+ * }
+ */
+// ============================================================================
+//  从 GitHub 拉取最新剧情数据的核心函数
+// ============================================================================
+async function fetchContent() {
+    try {
+        // 使用 master 分支的真实仓库链接，并添加时间戳防止 GitHub 缓存
+        const STORY_URL = 'https://raw.githubusercontent.com/ikunisdajiba/-/master/story.json?t=' + new Date().getTime();
+        
+        console.log('[fetchContent] 正在尝试从 GitHub 拉取数据...');
+        
+        const response = await fetch(STORY_URL, { cache: 'no-store' });
+        if (!response.ok) throw new Error(`HTTP 错误! 状态码: ${response.status}`);
+        
+        const remoteConfig = await response.json();
+
+        // 覆盖元数据
+        if (remoteConfig.metadata) {
+            gameConfig.metadata = remoteConfig.metadata;
+        }
+
+        // 覆盖资源表 (Assets)
+        if (remoteConfig.assets) {
+            gameConfig.assets = remoteConfig.assets;
+        }
+
+        // 核心：覆盖剧情节点 (Nodes)
+        // 引擎要求 nodes 是数组，我们清空原数组并推入新数据，以兼容 const 声明
+        if (remoteConfig.nodes && Array.isArray(remoteConfig.nodes)) {
+            gameConfig.nodes.length = 0; // 清空本地默认节点
+            gameConfig.nodes.push(...remoteConfig.nodes); // 注入远程节点
+        }
+
+        console.log('[fetchContent] ✅ 远程剧情加载成功！版本:', remoteConfig.metadata?.version || '未定义');
+
+    } catch (error) {
+        // 如果网络断开或链接失效，退回使用本地默认数据，保证游戏不崩溃
+        console.warn('[fetchContent] ❌ 远程加载失败，使用本地默认数据:', error.message);
+    }
+}
+// ============================================================================
+//  游戏引擎主类
+// ============================================================================
+class GalGameEngine {
+    constructor(config) {
+        this.config = config;
+        this.assetCache = new Map();     // 资源缓存 key → HTMLElement/Audio
+        this.nodeMap = new Map();        // 节点映射 id → node
+        this.backlog = [];               // 对话历史
+        this.currentNodeId = null;       // 当前节点ID
+        this.currentBgLayer = 'a';       // 当前活跃的背景层 a/b
+        this.currentSprites = { left: null, center: null, right: null }; // 当前立绘状态
+
+        // 打字机状态
+        this.typewriterTimer = null;
+        this.typewriterResolve = null;
+        this.isTyping = false;
+        this.fullText = '';
+        this.charIndex = 0;
+
+        // 控制状态
+        this.isPaused = false;
+        this.isAutoMode = false;
+        this.isSkipMode = false;
+        this.speedMultiplier = 1;        // 1x, 2x, 4x
+        this.autoTimer = null;
+        this.isUIHidden = false;
+        this.isWaitingForClick = false;
+        this.isShowingChoices = false;
+        this.slMode = 'save';            // 存档/读档面板模式
+
+        // 音频
+        this.currentBGM = null;
+        this.bgmAudio = null;
+
+        // 构建节点映射
+        this.config.nodes.forEach(node => {
+            this.nodeMap.set(node.id, node);
+        });
+
+        // 初始化
+        this._cacheDOM();
+        this._bindEvents();
+        this._updateMetadata();
+    }
+
+    // ---- DOM 缓存 ----
+    _cacheDOM() {
+        this.dom = {
+            loadingScreen: document.getElementById('loading-screen'),
+            progressBar: document.getElementById('progress-bar'),
+            progressText: document.getElementById('progress-text'),
+            startBtn: document.getElementById('start-btn'),
+            bgLayerA: document.getElementById('bg-layer-a'),
+            bgLayerB: document.getElementById('bg-layer-b'),
+            spriteLeft: document.getElementById('sprite-left'),
+            spriteCenter: document.getElementById('sprite-center'),
+            spriteRight: document.getElementById('sprite-right'),
+            dialogLayer: document.getElementById('dialog-layer'),
+            dialogBox: document.getElementById('dialog-box'),
+            speakerName: document.getElementById('speaker-name'),
+            dialogText: document.getElementById('dialog-text'),
+            continueIndicator: document.getElementById('continue-indicator'),
+            choicesLayer: document.getElementById('choices-layer'),
+            clickArea: document.getElementById('click-area'),
+            actionBar: document.getElementById('action-bar'),
+            titleScreen: document.getElementById('title-screen'),
+            backlogPanel: document.getElementById('backlog-panel'),
+            backlogList: document.getElementById('backlog-list'),
+            saveLoadPanel: document.getElementById('save-load-panel'),
+            slSlots: document.getElementById('sl-slots'),
+            notification: document.getElementById('notification'),
+            badgeAuto: document.getElementById('badge-auto'),
+            badgeSkip: document.getElementById('badge-skip'),
+            badgePause: document.getElementById('badge-pause'),
+            canvas: document.getElementById('particles-canvas')
+        };
+    }
+
+    // ---- 更新标题等元数据 ----
+    _updateMetadata() {
+        const m = this.config.metadata;
+        document.getElementById('game-title-loading').textContent = m.title;
+        document.getElementById('game-subtitle-loading').textContent = m.subtitle;
+        document.getElementById('title-main').textContent = m.title;
+        document.getElementById('title-sub').textContent = m.subtitle;
+        document.title = `${m.title} - ${m.subtitle}`;
+    }
+
+    // ---- 事件绑定 ----
+    _bindEvents() {
+        // 开始按钮
+        this.dom.startBtn.addEventListener('click', () => this._onStartGame());
+
+        // 点击推进对话
+        this.dom.clickArea.addEventListener('click', () => this._onAdvance());
+        this.dom.dialogBox.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this._onAdvance();
+        });
+
+        // 控制按钮
+        document.getElementById('btn-pause').addEventListener('click', () => this._togglePause());
+        document.getElementById('btn-speed').addEventListener('click', () => this._cycleSpeed());
+        document.getElementById('btn-auto').addEventListener('click', () => this._toggleAuto());
+        document.getElementById('btn-skip').addEventListener('click', () => this._toggleSkip());
+        document.getElementById('btn-save').addEventListener('click', () => this._openSaveLoad('save'));
+        document.getElementById('btn-load').addEventListener('click', () => this._openSaveLoad('load'));
+        document.getElementById('btn-back').addEventListener('click', () => this._openBacklog());
+        document.getElementById('btn-hide').addEventListener('click', () => this._toggleHideUI());
+
+        // 标题画面按钮
+        document.getElementById('btn-new-game').addEventListener('click', () => this._startNewGame());
+        document.getElementById('btn-continue-game').addEventListener('click', () => this._continueGame());
+
+        // 回溯面板关闭
+        document.getElementById('backlog-close').addEventListener('click', () => this._closeBacklog());
+
+        // 存档面板
+        document.querySelectorAll('.sl-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                this.slMode = tab.dataset.mode;
+                document.querySelectorAll('.sl-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                this._renderSaveSlots();
+            });
+        });
+        document.getElementById('sl-close').addEventListener('click', () => this._closeSaveLoad());
+
+        // 键盘快捷键
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case ' ':
+                case 'Enter':
+                    e.preventDefault();
+                    this._onAdvance();
+                    break;
+                case 'a':
+                case 'A':
+                    this._toggleAuto();
+                    break;
+                case 's':
+                case 'S':
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        this._openSaveLoad('save');
+                    } else {
+                        this._toggleSkip();
+                    }
+                    break;
+                case 'l':
+                case 'L':
+                    this._openSaveLoad('load');
+                    break;
+                case 'h':
+                case 'H':
+                    this._toggleHideUI();
+                    break;
+                case 'Escape':
+                    this._closeAllPanels();
+                    break;
+                case 'ArrowUp':
+                    this._openBacklog();
+                    break;
+            }
+        });
+    }
+
+    // ============================================================================
+    //  资源预缓存系统
+    // ============================================================================
+    async preloadAssets() {
+        const assets = this.config.assets;
+        if (assets.length === 0) {
+            this.dom.progressText.textContent = '无需加载资源';
+            this.dom.progressBar.style.width = '100%';
+            this.dom.startBtn.classList.add('ready');
+            return;
+        }
+
+        let loaded = 0;
+        const total = assets.length;
+
+        const loadPromises = assets.map(asset => {
+            return new Promise((resolve) => {
+                if (asset.type === 'image') {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => {
+                        this.assetCache.set(asset.key, img.src);
+                        loaded++;
+                        this._updateProgress(loaded, total);
+                        resolve();
+                    };
+                    img.onerror = () => {
+                        console.warn(`[预加载] 图片加载失败: ${asset.key} → ${asset.url}`);
+                        // 失败时使用渐变色占位
+                        this.assetCache.set(asset.key, null);
+                        loaded++;
+                        this._updateProgress(loaded, total);
+                        resolve();
+                    };
+                    img.src = asset.url;
+                } else if (asset.type === 'audio') {
+                    const audio = new Audio();
+                    audio.preload = 'auto';
+                    audio.oncanplaythrough = () => {
+                        this.assetCache.set(asset.key, audio);
+                        loaded++;
+                        this._updateProgress(loaded, total);
+                        resolve();
+                    };
+                    audio.onerror = () => {
+                        console.warn(`[预加载] 音频加载失败: ${asset.key} → ${asset.url}`);
+                        this.assetCache.set(asset.key, null);
+                        loaded++;
+                        this._updateProgress(loaded, total);
+                        resolve();
+                    };
+                    audio.src = asset.url;
+                } else {
+                    loaded++;
+                    this._updateProgress(loaded, total);
+                    resolve();
+                }
+            });
+        });
+
+        await Promise.all(loadPromises);
+        this.dom.startBtn.classList.add('ready');
+    }
+
+    _updateProgress(loaded, total) {
+        const percent = Math.round((loaded / total) * 100);
+        this.dom.progressBar.style.width = percent + '%';
+        this.dom.progressText.textContent = `加载资源中... ${loaded}/${total} (${percent}%)`;
+        if (loaded >= total) {
+            this.dom.progressText.textContent = '资源加载完毕！';
+        }
+    }
+
+    // ============================================================================
+    //  游戏流程控制
+    // ============================================================================
+    _onStartGame() {
+        this.dom.loadingScreen.classList.add('hidden');
+        setTimeout(() => {
+            this.dom.loadingScreen.style.display = 'none';
+            this.dom.titleScreen.classList.add('active');
+            // 设置标题背景
+            const firstBg = this.config.nodes[0]?.bg;
+            if (firstBg) this._setBackground(firstBg);
+        }, 800);
+    }
+
+    _startNewGame() {
+        this.dom.titleScreen.classList.remove('active');
+        this.backlog = [];
+        this.currentNodeId = null;
+        this.currentSprites = { left: null, center: null, right: null };
+        this._clearSprites();
+        this._goToNode(this.config.nodes[0].id);
+        this._initParticles();
+    }
+
+    _continueGame() {
+        // 尝试从最新存档恢复
+        let latestSave = null;
+        let latestTime = 0;
+        for (let i = 0; i < 8; i++) {
+            const data = localStorage.getItem(`galgame_save_${i}`);
+            if (data) {
+                const save = JSON.parse(data);
+                if (save.timestamp > latestTime) {
+                    latestTime = save.timestamp;
+                    latestSave = save;
+                }
+            }
+        }
+        if (latestSave) {
+            this.dom.titleScreen.classList.remove('active');
+            this.backlog = latestSave.backlog || [];
+            this._goToNode(latestSave.nodeId);
+            this._initParticles();
+            this._showNotification('已加载最新存档');
+        } else {
+            this._showNotification('没有找到存档');
+        }
+    }
+
+    // ---- 跳转到指定节点 ----
+    _goToNode(nodeId) {
+        if (nodeId === '__title__') {
+            this._returnToTitle();
+            return;
+        }
+
+        const node = this.nodeMap.get(nodeId);
+        if (!node) {
+            console.error(`[引擎] 找不到节点: ${nodeId}`);
+            this._showNotification(`错误：节点 "${nodeId}" 不存在`);
+            return;
+        }
+
+        this.currentNodeId = nodeId;
+        this.isShowingChoices = false;
+        this.isWaitingForClick = false;
+
+        // 隐藏选项层
+        this.dom.choicesLayer.classList.remove('active');
+        this.dom.choicesLayer.innerHTML = '';
+
+        // 显示对话层
+        this.dom.dialogLayer.classList.remove('hidden');
+        this.dom.continueIndicator.style.display = 'none';
+
+        // 设置背景
+        if (node.bg) {
+            this._setBackground(node.bg);
+        }
+
+        // 设置立绘
+        this._updateSprites(node.sprites);
+
+        // 播放BGM
+        if (node.bgm) {
+            this._playBGM(node.bgm);
+        }
+
+        // 播放SE
+        if (node.se) {
+            this._playSE(node.se);
+        }
+
+        // 特效
+        if (node.effect) {
+            this._playEffect(node.effect);
+        }
+
+        // 设置说话人
+        this.dom.speakerName.textContent = node.speaker || '';
+
+        // 开始打字机效果
+        this._startTypewriter(node.text).then(() => {
+            // 打字完成后
+            if (node.options && node.options.length > 0) {
+                // 显示选项
+                this._showChoices(node.options);
+            } else {
+                // 等待点击
+                this.isWaitingForClick = true;
+                this.dom.continueIndicator.style.display = 'block';
+
+                // 自动模式
+                if (this.isAutoMode && !this.isPaused) {
+                    this._scheduleAutoAdvance();
+                }
+
+                // 快进模式
+                if (this.isSkipMode && !this.isPaused) {
+                    setTimeout(() => {
+                        if (this.isSkipMode && this.isWaitingForClick) {
+                            this._advanceToNext();
+                        }
+                    }, 50);
+                }
+            }
+        });
+
+        // 添加到回溯历史
+        if (node.speaker || node.text) {
+            this.backlog.push({
+                speaker: node.speaker || '',
+                text: node.text
+            });
+            // 限制历史长度
+            if (this.backlog.length > 200) {
+                this.backlog = this.backlog.slice(-200);
+            }
+        }
+    }
+
+    // ---- 推进对话 ----
+    _onAdvance() {
+        if (this.isPaused) return;
+        if (this.isShowingChoices) return;
+
+        // 如果UI隐藏，先恢复
+        if (this.isUIHidden) {
+            this._toggleHideUI();
+            return;
+        }
+
+        if (this.isTyping) {
+            // 跳过打字机，直接显示全文
+            this._skipTypewriter();
+        } else if (this.isWaitingForClick) {
+            this._advanceToNext();
+        }
+    }
+
+    _advanceToNext() {
+        const node = this.nodeMap.get(this.currentNodeId);
+        if (!node) return;
+
+        this.isWaitingForClick = false;
+        this._clearAutoTimer();
+
+        if (node.next) {
+            this._goToNode(node.next);
+        }
+    }
+
+    // ---- 返回标题 ----
+    _returnToTitle() {
+        this._clearAutoTimer();
+        this._stopTypewriter();
+        this.isAutoMode = false;
+        this.isSkipMode = false;
+        this.isPaused = false;
+        this._updateStatusBadges();
+        this._updateButtonStates();
+        this._clearSprites();
+        this.dom.choicesLayer.classList.remove('active');
+        this.dom.titleScreen.classList.add('active');
+        this._stopBGM();
+    }
+
+    // ============================================================================
+    //  打字机效果
+    // ============================================================================
+    _startTypewriter(text) {
+        return new Promise((resolve) => {
+            this._stopTypewriter();
+
+            this.fullText = text;
+            this.charIndex = 0;
+            this.isTyping = true;
+            this.typewriterResolve = resolve;
+            this.dom.dialogText.textContent = '';
+
+            const baseSpeed = 45; // 基础速度（毫秒/字）
+            const speed = baseSpeed / this.speedMultiplier;
+
+            const tick = () => {
+                if (this.isPaused) {
+                    this.typewriterTimer = setTimeout(tick, 50);
+                    return;
+                }
+
+                if (this.charIndex < this.fullText.length) {
+                    this.dom.dialogText.textContent += this.fullText[this.charIndex];
+                    this.charIndex++;
+                    this.typewriterTimer = setTimeout(tick, speed);
+                } else {
+                    this.isTyping = false;
+                    resolve();
+                }
+            };
+
+            this.typewriterTimer = setTimeout(tick, speed);
+        });
+    }
+
+    _skipTypewriter() {
+        if (!this.isTyping) return;
+        this._stopTypewriter();
+        this.dom.dialogText.textContent = this.fullText;
+        this.isTyping = false;
+        if (this.typewriterResolve) {
+            this.typewriterResolve();
+            this.typewriterResolve = null;
+        }
+    }
+
+    _stopTypewriter() {
+        if (this.typewriterTimer) {
+            clearTimeout(this.typewriterTimer);
+            this.typewriterTimer = null;
+        }
+    }
+
+    // ============================================================================
+    //  背景切换（交叉淡入淡出）
+    // ============================================================================
+    _setBackground(bgKey) {
+        const url = this.assetCache.get(bgKey);
+        if (!url) {
+            // 使用渐变色占位
+            const colors = {
+                'bg_school': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                'bg_classroom': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                'bg_sakura': 'linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%)',
+                'bg_sunset': 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                'bg_night': 'linear-gradient(135deg, #0c3483 0%, #a2b6df 100%)',
+                'bg_rooftop': 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+            };
+            const gradient = colors[bgKey] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+
+            if (this.currentBgLayer === 'a') {
+                this.dom.bgLayerB.style.backgroundImage = 'none';
+                this.dom.bgLayerB.style.background = gradient;
+                this.dom.bgLayerB.style.opacity = '1';
+                this.dom.bgLayerA.style.opacity = '0';
+                this.currentBgLayer = 'b';
+            } else {
+                this.dom.bgLayerA.style.backgroundImage = 'none';
+                this.dom.bgLayerA.style.background = gradient;
+                this.dom.bgLayerA.style.opacity = '1';
+                this.dom.bgLayerB.style.opacity = '0';
+                this.currentBgLayer = 'a';
+            }
+            return;
+        }
+
+        // 交叉淡入淡出
+        if (this.currentBgLayer === 'a') {
+            this.dom.bgLayerB.style.background = 'none';
+            this.dom.bgLayerB.style.backgroundImage = `url(${url})`;
+            this.dom.bgLayerB.style.backgroundSize = 'cover';
+            this.dom.bgLayerB.style.backgroundPosition = 'center';
+            this.dom.bgLayerB.style.opacity = '1';
+            this.dom.bgLayerA.style.opacity = '0';
+            this.currentBgLayer = 'b';
+        } else {
+            this.dom.bgLayerA.style.background = 'none';
+            this.dom.bgLayerA.style.backgroundImage = `url(${url})`;
+            this.dom.bgLayerA.style.backgroundSize = 'cover';
+            this.dom.bgLayerA.style.backgroundPosition = 'center';
+            this.dom.bgLayerA.style.opacity = '1';
+            this.dom.bgLayerB.style.opacity = '0';
+            this.currentBgLayer = 'a';
+        }
+    }
+
+    // ============================================================================
+    //  立绘管理
+    // ============================================================================
+    _updateSprites(sprites) {
+        if (!sprites) return;
+
+        const positions = ['left', 'center', 'right'];
+        const domMap = {
+            left: this.dom.spriteLeft,
+            center: this.dom.spriteCenter,
+            right: this.dom.spriteRight
+        };
+
+        positions.forEach(pos => {
+            const newKey = sprites[pos];
+            const oldKey = this.currentSprites[pos];
+            const el = domMap[pos];
+
+            if (newKey !== oldKey) {
+                if (newKey) {
+                    const url = this.assetCache.get(newKey);
+                    if (url) {
+                        el.src = url;
+                    } else {
+                        // 占位立绘
+                        el.src = `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="300" height="600"><rect fill="#${Math.floor(Math.random()*16777215).toString(16).padStart(6,'0')}40" width="300" height="600" rx="20"/><text x="150" y="300" text-anchor="middle" fill="white" font-size="20">${newKey.split('_').pop()}</text></svg>`)}`;
+                    }
+                    el.style.opacity = '1';
+                    // 添加进入动画
+                    el.className = 'sprite';
+                    void el.offsetWidth; // 强制重排
+                    el.classList.add(`entering-${pos}`);
+                } else if (oldKey) {
+                    // 退出动画
+                    el.classList.add('exiting');
+                    setTimeout(() => {
+                        el.style.opacity = '0';
+                        el.className = 'sprite';
+                        el.src = '';
+                    }, 400);
+                }
+                this.currentSprites[pos] = newKey;
+            }
+
+            // 说话高亮/暗淡效果
+            if (sprites.active && this.currentSprites[pos]) {
+                if (pos === sprites.active) {
+                    el.classList.remove('dimmed');
+                    el.classList.add('speaking');
+                } else {
+                    el.classList.remove('speaking');
+                    el.classList.add('dimmed');
+                }
+            } else if (this.currentSprites[pos]) {
+                el.classList.remove('speaking', 'dimmed');
+            }
+        });
+    }
+
+    _clearSprites() {
+        ['spriteLeft', 'spriteCenter', 'spriteRight'].forEach(key => {
+            this.dom[key].style.opacity = '0';
+            this.dom[key].src = '';
+            this.dom[key].className = 'sprite';
+        });
+        this.currentSprites = { left: null, center: null, right: null };
+    }
+
+    // ============================================================================
+    //  选项分支
+    // ============================================================================
+    _showChoices(options) {
+        this.isShowingChoices = true;
+        this.dom.choicesLayer.innerHTML = '';
+
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'choice-btn';
+            btn.textContent = opt.text;
+            btn.addEventListener('click', () => {
+                this.isShowingChoices = false;
+                this._goToNode(opt.next);
+            });
+            this.dom.choicesLayer.appendChild(btn);
+        });
+
+        this.dom.choicesLayer.classList.add('active');
+    }
+
+    // ============================================================================
+    //  音频系统
+    // ============================================================================
+    _playBGM(bgmKey) {
+        if (bgmKey === 'stop') {
+            this._stopBGM();
+            return;
+        }
+        if (bgmKey === this.currentBGM) return;
+
+        this._stopBGM();
+        const audio = this.assetCache.get(bgmKey);
+        if (audio && audio instanceof Audio) {
+            this.bgmAudio = audio.cloneNode();
+            this.bgmAudio.loop = true;
+            this.bgmAudio.volume = 0.5;
+            this.bgmAudio.play().catch(() => {});
+            this.currentBGM = bgmKey;
+        }
+    }
+
+    _stopBGM() {
+        if (this.bgmAudio) {
+            this.bgmAudio.pause();
+            this.bgmAudio.currentTime = 0;
+            this.bgmAudio = null;
+        }
+        this.currentBGM = null;
+    }
+
+    _playSE(seKey) {
+        const audio = this.assetCache.get(seKey);
+        if (audio && audio instanceof Audio) {
+            const se = audio.cloneNode();
+            se.volume = 0.7;
+            se.play().catch(() => {});
+        }
+    }
+
+    // ============================================================================
+    //  特效系统
+    // ============================================================================
+    _playEffect(effect) {
+        const container = document.getElementById('game-container');
+        switch(effect) {
+            case 'shake':
+                container.style.animation = 'none';
+                void container.offsetWidth;
+                container.style.animation = 'shake 0.5s ease';
+                setTimeout(() => { container.style.animation = 'none'; }, 500);
+                break;
+            case 'flash':
+                const flash = document.createElement('div');
+                flash.style.cssText = 'position:absolute;inset:0;z-index:200;background:white;opacity:0;animation:flashAnim 0.5s ease;pointer-events:none;';
+                container.appendChild(flash);
+                setTimeout(() => flash.remove(), 500);
+                break;
+        }
+    }
+
+    // ============================================================================
+    //  控制按钮功能
+    // ============================================================================
+
+    // 暂停
+    _togglePause() {
+        this.isPaused = !this.isPaused;
+        document.getElementById('btn-pause').classList.toggle('active', this.isPaused);
+        this._updateStatusBadges();
+
+        if (this.isPaused) {
+            this._clearAutoTimer();
+        } else if (this.isAutoMode && this.isWaitingForClick) {
+            this._scheduleAutoAdvance();
+        }
+    }
+
+    // 速度切换
+    _cycleSpeed() {
+        const speeds = [1, 2, 4];
+        const idx = speeds.indexOf(this.speedMultiplier);
+        this.speedMultiplier = speeds[(idx + 1) % speeds.length];
+        document.getElementById('btn-speed').textContent = this.speedMultiplier + 'x';
+    }
+
+    // 自动模式
+    _toggleAuto() {
+        this.isAutoMode = !this.isAutoMode;
+        document.getElementById('btn-auto').classList.toggle('active', this.isAutoMode);
+        this._updateStatusBadges();
+
+        if (this.isAutoMode) {
+            this.isSkipMode = false;
+            document.getElementById('btn-skip').classList.remove('active');
+            if (this.isWaitingForClick && !this.isPaused) {
+                this._scheduleAutoAdvance();
+            }
+        } else {
+            this._clearAutoTimer();
+        }
+    }
+
+    _scheduleAutoAdvance() {
+        this._clearAutoTimer();
+        const delay = Math.max(1500, 3000 / this.speedMultiplier);
+        this.autoTimer = setTimeout(() => {
+            if (this.isAutoMode && this.isWaitingForClick && !this.isPaused) {
+                this._advanceToNext();
+            }
+        }, delay);
+    }
+
+    _clearAutoTimer() {
+        if (this.autoTimer) {
+            clearTimeout(this.autoTimer);
+            this.autoTimer = null;
+        }
+    }
+
+    // 快进模式
+    _toggleSkip() {
+        this.isSkipMode = !this.isSkipMode;
+        document.getElementById('btn-skip').classList.toggle('active', this.isSkipMode);
+        this._updateStatusBadges();
+
+        if (this.isSkipMode) {
+            this.isAutoMode = false;
+            document.getElementById('btn-auto').classList.remove('active');
+            // 如果正在打字，跳过
+            if (this.isTyping) {
+                this._skipTypewriter();
+            }
+            // 如果等待点击，立即推进
+            if (this.isWaitingForClick && !this.isPaused) {
+                setTimeout(() => {
+                    if (this.isSkipMode && this.isWaitingForClick) {
+                        this._advanceToNext();
+                    }
+                }, 50);
+            }
+        }
+    }
+
+    // 隐藏UI
+    _toggleHideUI() {
+        this.isUIHidden = !this.isUIHidden;
+        this.dom.dialogLayer.classList.toggle('hidden', this.isUIHidden);
+        this.dom.actionBar.classList.toggle('hidden', this.isUIHidden);
+        document.getElementById('btn-hide').classList.toggle('active', this.isUIHidden);
+    }
+
+    // 状态徽章更新
+    _updateStatusBadges() {
+        this.dom.badgeAuto.classList.toggle('visible', this.isAutoMode);
+        this.dom.badgeSkip.classList.toggle('visible', this.isSkipMode);
+        this.dom.badgePause.classList.toggle('visible', this.isPaused);
+    }
+
+    _updateButtonStates() {
+        document.getElementById('btn-pause').classList.toggle('active', this.isPaused);
+        document.getElementById('btn-auto').classList.toggle('active', this.isAutoMode);
+        document.getElementById('btn-skip').classList.toggle('active', this.isSkipMode);
+    }
+
+    // ============================================================================
+    //  回溯系统 (Backlog)
+    // ============================================================================
+    _openBacklog() {
+        this.dom.backlogList.innerHTML = '';
+        this.backlog.forEach(entry => {
+            const div = document.createElement('div');
+            div.className = 'backlog-entry';
+            if (entry.speaker) {
+                div.innerHTML = `<div class="bl-speaker">${entry.speaker}</div>`;
+            }
+            div.innerHTML += `<div class="bl-text">${entry.text.replace(/\n/g, '<br>')}</div>`;
+            this.dom.backlogList.appendChild(div);
+        });
+        this.dom.backlogPanel.classList.add('active');
+        // 滚动到底部
+        this.dom.backlogList.scrollTop = this.dom.backlogList.scrollHeight;
+    }
+
+    _closeBacklog() {
+        this.dom.backlogPanel.classList.remove('active');
+    }
+
+    // ============================================================================
+    //  存档/读档系统 (Save/Load)
+    // ============================================================================
+    _openSaveLoad(mode) {
+        this.slMode = mode;
+        document.querySelectorAll('.sl-tab').forEach(t => {
+            t.classList.toggle('active', t.dataset.mode === mode);
+        });
+        this._renderSaveSlots();
+        this.dom.saveLoadPanel.classList.add('active');
+    }
+
+    _closeSaveLoad() {
+        this.dom.saveLoadPanel.classList.remove('active');
+    }
+
+    _renderSaveSlots() {
+        this.dom.slSlots.innerHTML = '';
+        for (let i = 0; i < 8; i++) {
+            const slot = document.createElement('div');
+            slot.className = 'sl-slot';
+
+            const data = localStorage.getItem(`galgame_save_${i}`);
+            if (data) {
+                const save = JSON.parse(data);
+                const date = new Date(save.timestamp).toLocaleString('zh-CN');
+                const node = this.nodeMap.get(save.nodeId);
+                const preview = node ? (node.text || '').substring(0, 30) + '...' : '未知节点';
+                slot.innerHTML = `
+                    <div class="slot-title">存档 ${i + 1}</div>
+                    <div class="slot-info">${date}</div>
+                    <div class="slot-info" style="margin-top:0.3em;color:rgba(200,180,230,0.8)">${preview}</div>
+                `;
+            } else {
+                slot.innerHTML = `
+                    <div class="slot-title">存档 ${i + 1}</div>
+                    <div class="slot-info">— 空 —</div>
+                `;
+            }
+
+            slot.addEventListener('click', () => {
+                if (this.slMode === 'save') {
+                    this._saveToSlot(i);
+                } else {
+                    this._loadFromSlot(i);
+                }
+            });
+
+            this.dom.slSlots.appendChild(slot);
+        }
+    }
+
+    _saveToSlot(index) {
+        if (!this.currentNodeId) {
+            this._showNotification('当前没有可存档的进度');
+            return;
+        }
+        const saveData = {
+            nodeId: this.currentNodeId,
+            timestamp: Date.now(),
+            backlog: this.backlog.slice(-50) // 保存最近50条历史
+        };
+        localStorage.setItem(`galgame_save_${index}`, JSON.stringify(saveData));
+        this._showNotification(`已保存到存档 ${index + 1}`);
+        this._renderSaveSlots();
+    }
+
+    _loadFromSlot(index) {
+        const data = localStorage.getItem(`galgame_save_${index}`);
+        if (!data) {
+            this._showNotification('该存档为空');
+            return;
+        }
+        const save = JSON.parse(data);
+        this.backlog = save.backlog || [];
+        this._closeSaveLoad();
+        this.dom.titleScreen.classList.remove('active');
+        this._clearSprites();
+        this._goToNode(save.nodeId);
+        this._showNotification(`已加载存档 ${index + 1}`);
+    }
+
+    // ============================================================================
+    //  关闭所有面板
+    // ============================================================================
+    _closeAllPanels() {
+        this._closeBacklog();
+        this._closeSaveLoad();
+        if (this.isUIHidden) this._toggleHideUI();
+    }
+
+    // ============================================================================
+    //  通知提示
+    // ============================================================================
+    _showNotification(text) {
+        this.dom.notification.textContent = text;
+        this.dom.notification.classList.add('show');
+        setTimeout(() => {
+            this.dom.notification.classList.remove('show');
+        }, 1500);
+    }
+
+    // ============================================================================
+    //  粒子效果（樱花飘落）
+    // ============================================================================
+    _initParticles() {
+        const canvas = this.dom.canvas;
+        const ctx = canvas.getContext('2d');
+        const container = document.getElementById('game-container');
+
+        const resize = () => {
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        };
+        resize();
+        window.addEventListener('resize', resize);
+
+        const particles = [];
+        const maxParticles = 25;
+
+        class Petal {
+            constructor() {
+                this.reset();
+                this.y = Math.random() * canvas.height;
+            }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = -10;
+                this.size = Math.random() * 6 + 3;
+                this.speedY = Math.random() * 1 + 0.5;
+                this.speedX = Math.random() * 1 - 0.3;
+                this.rotation = Math.random() * Math.PI * 2;
+                this.rotSpeed = (Math.random() - 0.5) * 0.03;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.wobble = Math.random() * Math.PI * 2;
+                this.wobbleSpeed = Math.random() * 0.02 + 0.01;
+            }
+            update() {
+                this.y += this.speedY;
+                this.wobble += this.wobbleSpeed;
+                this.x += this.speedX + Math.sin(this.wobble) * 0.5;
+                this.rotation += this.rotSpeed;
+                if (this.y > canvas.height + 10) this.reset();
+                if (this.x < -20 || this.x > canvas.width + 20) this.reset();
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#ffb7d5';
+                ctx.beginPath();
+                // 花瓣形状
+                ctx.moveTo(0, 0);
+                ctx.bezierCurveTo(
+                    this.size * 0.5, -this.size * 0.8,
+                    this.size, -this.size * 0.3,
+                    0, this.size * 0.5
+                );
+                ctx.bezierCurveTo(
+                    -this.size, -this.size * 0.3,
+                    -this.size * 0.5, -this.size * 0.8,
+                    0, 0
+                );
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        for (let i = 0; i < maxParticles; i++) {
+            particles.push(new Petal());
+        }
+
+        const animate = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        };
+        animate();
+    }
+}
+
+// ============================================================================
+//  启动引擎
+// ============================================================================
+(async function main() {
+    // 1. 尝试从远程获取最新配置
+    await fetchContent();
+
+    // 2. 创建引擎实例
+    const engine = new GalGameEngine(gameConfig);
+
+    // 3. 预加载资源
+    await engine.preloadAssets();
+
+    console.log('[GalGame Engine] 初始化完成，版本:', gameConfig.metadata.version);
+    console.log('[GalGame Engine] 已加载节点数:', gameConfig.nodes.length);
+    console.log('[GalGame Engine] 已缓存资源数:', engine.assetCache.size);
+})();
+
+// 添加动态CSS动画
+const dynamicStyles = document.createElement('style');
+dynamicStyles.textContent = `
+    @keyframes shake {
+        0%, 100% { transform: translateY(-50%) translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateY(-50%) translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateY(-50%) translateX(5px); }
+    }
+    @keyframes flashAnim {
+        0% { opacity: 0; }
+        20% { opacity: 0.8; }
+        100% { opacity: 0; }
+    }
+`;
+document.head.appendChild(dynamicStyles);
+</script>
+</body>
+</html>
+
