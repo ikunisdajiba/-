@@ -2,7 +2,7 @@
   "metadata": {
     "title": "糖glagame",
     "subtitle": "第一章",
-    "version": "1.0.2",
+    "version": "1.0.0",
     "author": "制作人"
   },
   "assets": [
@@ -29,6 +29,31 @@
     {
       "key": "晕倒",
       "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/晕倒.png",
+      "type": "image"
+    },
+    {
+      "key": "背景_街道夜景",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/街道.png",
+      "type": "image"
+    },
+    {
+      "key": "CG_聊天界面",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/手机.png",
+      "type": "image"
+    },
+    {
+      "key": "立绘_流浪猫",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/流浪猫.png",
+      "type": "image"
+    },
+    {
+      "key": "立绘_糖_生气",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/生气.png",
+      "type": "image"
+    },
+    {
+      "key": "立绘_糖_微笑",
+      "url": "https://raw.githubusercontent.com/ikunisdajiba/-/master/立绘_糖_微笑.png",
       "type": "image"
     }
   ],
@@ -91,179 +116,1237 @@
       "se": null,
       "effect": null,
       "options": null,
-      "next": "__title__"
+      "next": "node_1"
     },
     {
       "id": "scene_6721",
       "speaker": "旁白",
-      "text": "（对方把捡起来的薯片递给你，两人手指又碰到一起，同时触电般缩回手，空气瞬间凝固，尴尬到能听见风吹树叶的声音）",
+      "text": "对方把捡起来的薯片递给你，两人手指又碰到一起，同时触电般缩回手，空气瞬间凝固，尴尬到能听见风吹树叶的声音）",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "害羞",
+        "right": null,
+        "active": null
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "node_chat_1"
+    },
+    {
+      "id": "scene_7130",
+      "speaker": "糖",
+      "text": "（站在原地，双手攥着自己的零食袋，耳朵悄悄泛红，半天憋出一句超直白的话）那个……我、我想知道你喜欢什么。",
       "bg": "便利店",
       "sprites": {
         "left": null,
         "center": "普通",
         "right": null,
-        "active": "center"
+        "active": null
       },
       "bgm": null,
       "se": null,
       "effect": null,
       "options": [
         {
-          "text": "（轻咳一声打破尴尬）那个……为了赔罪，我请你喝点什么吧？",
-          "next": "scene_8001"
-        },
-        {
-          "text": "（脸红到耳根，抓起饮料就跑）抱歉我突然想起还有急事我先走了！",
-          "next": "scene_8002"
+          "text": "如实说喜好",
+          "next": "scene_5753"
         }
       ],
       "next": null
     },
     {
-      "id": "scene_8001",
-      "speaker": "？？？",
-      "text": "（愣了一下，脸颊迅速泛起微红，眼神飘忽不定地看向旁边的路灯）啊……不、不用了，本来我也没看路。不过……如果你坚持的话……",
-      "bg": "便利店",
-      "sprites": {
-        "left": null,
-        "center": "害羞",
-        "right": null,
-        "active": "center"
-      },
-      "bgm": null,
-      "se": null,
-      "effect": null,
-      "options": null,
-      "next": "scene_8003"
-    },
-    {
-      "id": "scene_8003",
-      "speaker": "旁白",
-      "text": "昏黄的灯光下，你看到他紧张地攥着衣角，原本冷淡拘谨的氛围似乎因为这个小插曲变得有些温和起来。于是，你们一前一后重新走进了便利店。",
-      "bg": "便利店",
-      "sprites": {
-        "left": null,
-        "center": "普通",
-        "right": null,
-        "active": "center"
-      },
-      "bgm": null,
-      "se": null,
-      "effect": null,
-      "options": null,
-      "next": "scene_8004"
-    },
-    {
-      "id": "scene_8002",
-      "speaker": "旁白",
-      "text": "坏结局：落荒而逃\n你像一阵风似的逃离了现场，留下他在原地看着你的背影发呆。你因为过度紧张，错过了一个认识他的好机会。",
-      "bg": "便利店",
-      "sprites": {
-        "left": null,
-        "center": "普通",
-        "right": null,
-        "active": "center"
-      },
-      "bgm": null,
-      "se": null,
-      "effect": null,
-      "options": null,
-      "next": "__title__"
-    },
-    {
-      "id": "scene_8004",
-      "speaker": "旁白",
-      "text": "伴随着“叮咚”的欢迎光临提示音，你带着他走到了摆满饮料的冷柜前。冷气扑面而来，稍微缓解了刚才的局促感。",
-      "bg": "便利店",
-      "sprites": {
-        "left": null,
-        "center": "普通",
-        "right": null,
-        "active": "center"
-      },
-      "bgm": null,
-      "se": null,
-      "effect": null,
-      "options": null,
-      "next": "scene_8005"
-    },
-    {
-      "id": "scene_8005",
+      "id": "scene_5753",
       "speaker": "我",
-      "text": "（回头看他，尽量让语气显得自然）你想喝什么？碳酸饮料还是茶饮？或者……咖啡？",
+      "text": "（愣了一下，挠挠后脑勺，语气尴尬又直白）啊、喜好啊……我平时就喜欢宅着看动漫，没别的爱好。",
       "bg": "便利店",
       "sprites": {
         "left": null,
         "center": "普通",
         "right": null,
-        "active": "center"
+        "active": null
       },
       "bgm": null,
       "se": null,
       "effect": null,
       "options": null,
-      "next": "scene_8006"
+      "next": "node_1"
     },
     {
-      "id": "scene_8006",
-      "speaker": "？？？",
-      "text": "（视线在花花绿绿的饮料瓶上扫过，最后停留在角落里，声音小得像蚊子）……想要那个，草莓牛奶。",
-      "bg": "便利店",
+      "id": "scene_6487",
+      "speaker": "我",
+      "text": "反问对方喜好",
+      "bg": "",
       "sprites": {
         "left": null,
-        "center": "害羞",
+        "center": null,
         "right": null,
-        "active": "center"
+        "active": null
       },
       "bgm": null,
       "se": null,
       "effect": null,
+      "options": null,
+      "next": "node_01"
+    },
+    {
+      "id": "scene_8168",
+      "speaker": "",
+      "text": "新剧本...",
+      "bg": "",
+      "sprites": {
+        "left": null,
+        "center": null,
+        "right": null,
+        "active": null
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "node_01"
+    },
+    {
+      "id": "node_1",
+      "speaker": "旁白",
+      "text": "糖听到你的回答，愣了一下，原本紧绷的肩膀微微放松。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_2"
+    },
+    {
+      "id": "node_2",
+      "speaker": "糖",
+      "text": "（红着脸，眼神闪烁着惊喜，结结巴巴）动、动漫？其实……我也很喜欢！",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_3"
+    },
+    {
+      "id": "node_3",
+      "speaker": "糖",
+      "text": "那个……你看过《星空下的废柴勇者》吗？虽然很冷门，但是……",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_4_options"
+    },
+    {
+      "id": "node_4_options",
+      "speaker": "我",
+      "text": "（听到这个名字，你心里一惊，那可是你反复刷了三遍的冷门神作！）",
+      "bg": "便利店",
+      "sprites": null,
       "options": [
         {
-          "text": "（忍不住笑出声）草莓牛奶？看不出来，你还挺喜欢甜食的呀？",
-          "next": "scene_8007_A"
+          "text": "激动相认！",
+          "next": "node_5_A"
         },
         {
-          "text": "（直接从冰柜里拿出两盒）好巧，这也是我最喜欢喝的。",
-          "next": "scene_8007_B"
+          "text": "故意逗逗他",
+          "next": "node_5_B"
         }
       ],
       "next": null
     },
     {
-      "id": "scene_8007_A",
-      "speaker": "？？？",
-      "text": "（被人戳中心思，脸颊更红了，猛地移开视线看向别处）咳……只是刚好想补充一点糖分而已，不可以吗？",
+      "id": "node_5_A",
+      "speaker": "我",
+      "text": "天呐！那是我最喜欢的番！男主最后在废墟里拔剑那段简直绝了！",
+      "bg": "便利店",
+      "sprites": null,
+      "options": null,
+      "next": "node_6_A"
+    },
+    {
+      "id": "node_6_A",
+      "speaker": "糖",
+      "text": "（眼睛瞬间亮了起来，激动得往前踏了一步）对吧对吧！你也喜欢那一段！我还以为现实中根本没人看过呢！",
       "bg": "便利店",
       "sprites": {
-        "left": null,
-        "center": "害羞",
-        "right": null,
-        "active": "center"
+        "center": "普通"
       },
-      "bgm": null,
-      "se": null,
-      "effect": null,
+      "options": null,
+      "next": "node_7_merge"
+    },
+    {
+      "id": "node_5_B",
+      "speaker": "我",
+      "text": "哦，那个啊，好像听说过……是不是讲一个勇者天天在村口睡觉的故事？",
+      "bg": "便利店",
+      "sprites": null,
+      "options": null,
+      "next": "node_6_B"
+    },
+    {
+      "id": "node_6_B",
+      "speaker": "糖",
+      "text": "（有些着急地摆手）不、不是的！虽然他前期很废柴，但后期为了守护同伴……啊，抱歉，我一激动话就变多了……",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_7_merge"
+    },
+    {
+      "id": "node_7_merge",
+      "speaker": "旁白",
+      "text": "晚风依旧吹着，但便利店门口的空气似乎不再那么尴尬了。共同的话题像是一把钥匙，悄然打开了两人之间的隔阂。",
+      "bg": "便利店",
+      "sprites": null,
+      "options": null,
+      "next": "node_8"
+    },
+    {
+      "id": "node_8",
+      "speaker": "糖",
+      "text": "（低头看着脚尖，声音小得像蚊子，手里还攥着刚才捡起的零食）那、那个……如果不介意的话，以后可以一起聊聊吗？",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_01_walk"
+    },
+    {
+      "id": "node_chat_1",
+      "speaker": "我",
+      "text": "当然好啊！难得遇到同好，我可是攒了一肚子的话想找人吐槽呢。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_chat_2"
+    },
+    {
+      "id": "node_chat_2",
+      "speaker": "糖",
+      "text": "（长舒了一口气，嘴角忍不住微微上扬）太好了……我还怕你会觉得我很奇怪。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_chat_3"
+    },
+    {
+      "id": "node_chat_3",
+      "speaker": "旁白",
+      "text": "暖黄色的路灯下，两人就这样站在门口聊了起来。微风拂过，原本凝固尴尬的空气早已消散，取而代之的是一种轻松的氛围。",
+      "bg": "便利店",
+      "sprites": null,
+      "options": null,
+      "next": "node_chat_4"
+    },
+    {
+      "id": "node_chat_4",
+      "speaker": "我",
+      "text": "说起来，整部番里你印象最深的是哪一段？",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": [
+        {
+          "text": "男主雨中觉醒的战斗",
+          "next": "node_chat_5_A"
+        },
+        {
+          "text": "公会里的搞笑日常",
+          "next": "node_chat_5_B"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "node_chat_5_A",
+      "speaker": "我",
+      "text": "肯定是第七集男主觉醒那段吧！在雨中顿悟的画面太神了！",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_chat_6_A"
+    },
+    {
+      "id": "node_chat_6_A",
+      "speaker": "糖",
+      "text": "对对！那里的分镜简直绝了，配上神级BGM，我当时整个人都起鸡皮疙瘩了！",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_chat_7_merge"
+    },
+    {
+      "id": "node_chat_5_B",
+      "speaker": "我",
+      "text": "其实我最喜欢他们平时在公会里吵吵闹闹的日常，感觉特别温馨。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_chat_6_B"
+    },
+    {
+      "id": "node_chat_6_B",
+      "speaker": "糖",
+      "text": "嗯嗯！那种就算世界末日也要先吃饱饭的松弛感，真的让人看了很治愈呢……",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_chat_7_merge"
+    },
+    {
+      "id": "node_chat_7_merge",
+      "speaker": "旁白",
+      "text": "一旦聊起喜欢的事物，她就像变了个人似的，话语里充满了活力，连带着周围的空气都变得轻快起来。",
+      "bg": "便利店",
+      "sprites": null,
+      "options": null,
+      "next": "node_chat_8"
+    },
+    {
+      "id": "node_chat_8",
+      "speaker": "糖",
+      "text": "啊……抱、抱歉！不知不觉就说了这么多，明明时间已经这么晚了……",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_chat_9"
+    },
+    {
+      "id": "node_chat_9",
+      "speaker": "我",
+      "text": "没关系，我也聊得很开心。那……我们加个好友？以后在线上继续聊？",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_chat_10"
+    },
+    {
+      "id": "node_chat_10",
+      "speaker": "糖",
+      "text": "嗯……好的！",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_chat_11"
+    },
+    {
+      "id": "node_chat_11",
+      "speaker": "旁白",
+      "text": "她手忙脚乱地掏出手机，屏幕的光映照着她有些躲闪却又带着笑意的眼眸。这是一个美好的夜晚。",
+      "bg": "便利店",
+      "sprites": null,
+      "options": null,
+      "next": "node_1"
+    },
+    {
+      "id": "node_1",
+      "speaker": "旁白",
+      "text": "一阵微凉的晚风吹过，拂动了糖的发丝。她下意识地看了一眼手机屏幕上的时间。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_2"
+    },
+    {
+      "id": "node_2",
+      "speaker": "糖",
+      "text": "啊……都已经这个点了。不知不觉在便利店门口站了这么久……",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_3"
+    },
+    {
+      "id": "node_3",
+      "speaker": "我",
+      "text": "是啊，聊得太投入，完全没注意到时间流逝呢。",
+      "options": null,
+      "next": "node_4"
+    },
+    {
+      "id": "node_4",
+      "speaker": "旁白",
+      "text": "她轻轻咬了咬下唇，眼神中闪过一丝意犹未尽的不舍。随后，她的目光落在了自己手里提着的购物袋上。",
+      "options": null,
+      "next": "node_5"
+    },
+    {
+      "id": "node_5",
+      "speaker": "旁白",
+      "text": "突然，她像是下定了什么决心似的，从袋子里翻出了一包零食——正是刚才掉在地上的其中一包，一把塞进了我的怀里。",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_6"
+    },
+    {
+      "id": "node_6",
+      "speaker": "糖",
+      "text": "这、这个……给你！",
+      "options": null,
+      "next": "node_7"
+    },
+    {
+      "id": "node_7",
+      "speaker": "我",
+      "text": "诶？",
+      "options": [
+        {
+          "text": "给我？怎么突然给我零食？",
+          "next": "node_8_A"
+        },
+        {
+          "text": "谢谢！不过这不是你刚买的吗？",
+          "next": "node_8_B"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "node_8_A",
+      "speaker": "糖",
+      "text": "就当是……刚才撞到你的『赔礼』！",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_9_merge"
+    },
+    {
+      "id": "node_8_B",
+      "speaker": "糖",
+      "text": "没关系的！就当是……刚才撞到你的『赔礼』，请务必收下！",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_9_merge"
+    },
+    {
+      "id": "node_9_merge",
+      "speaker": "旁白",
+      "text": "她小声地说完这句话，脸颊在路灯的映照下显得有些微红。",
+      "options": null,
+      "next": "node_10"
+    },
+    {
+      "id": "node_10",
+      "speaker": "糖",
+      "text": "那、那个……我先回去了！线上联系！晚安！",
+      "options": null,
+      "next": "node_11"
+    },
+    {
+      "id": "node_11",
+      "speaker": "旁白",
+      "text": "还没等我回应，她便像一只受惊的小鹿般转过身，踩着轻快的步伐跑进了夜色中。",
+      "sprites": {},
+      "options": null,
+      "next": "node_12"
+    },
+    {
+      "id": "node_12",
+      "speaker": "我",
+      "text": "（看着怀里的零食）……晚安。",
+      "options": null,
+      "next": "node_13"
+    },
+    {
+      "id": "node_13",
+      "speaker": "旁白",
+      "text": "晚风似乎变得比之前更加温柔了些。我将那包零食收好，转身踏上了回家的路。",
+      "options": null,
+      "next": "walk_01"
+    },
+    {
+      "id": "node_01",
+      "speaker": "旁白",
+      "text": "就在我转过身，准备踏上回家之路时，身后突然传来一阵急促的脚步声。",
+      "bg": "便利店",
+      "sprites": {},
+      "options": null,
+      "next": "node_02"
+    },
+    {
+      "id": "node_02",
+      "speaker": "糖",
+      "text": "等、等一下——！",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_03"
+    },
+    {
+      "id": "node_03",
+      "speaker": "旁白",
+      "text": "我惊讶地回过头，发现她竟然又跑了回来。她停在我面前，深吸了一口气，像是下定了极大的决心。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_04"
+    },
+    {
+      "id": "node_04",
+      "speaker": "旁白",
+      "text": "在路灯的映照下，我看到她连脖子都泛着红晕。她双手微微颤抖着，举起了亮着屏幕的手机。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_05"
+    },
+    {
+      "id": "node_05",
+      "speaker": "糖",
+      "text": "那个……能不能加个联系方式？以后、以后可以一起讨论更新的剧情！",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": [
+        {
+          "text": "好啊，我也正有此意。",
+          "next": "node_06_A"
+        },
+        {
+          "text": "当然可以，扫你还是扫我？",
+          "next": "node_06_B"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "node_06_A",
+      "speaker": "我",
+      "text": "好啊，我也正有此意。其实我刚刚也想找你要的。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_07_A"
+    },
+    {
+      "id": "node_07_A",
+      "speaker": "糖",
+      "text": "真、真的吗？！太好了……我还以为会被当成奇怪的人……",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_08_merge"
+    },
+    {
+      "id": "node_06_B",
+      "speaker": "我",
+      "text": "当然可以，扫你还是扫我？",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_07_B"
+    },
+    {
+      "id": "node_07_B",
+      "speaker": "糖",
+      "text": "扫、扫我就可以了！我已经把二维码准备好了……",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_08_merge"
+    },
+    {
+      "id": "node_08_merge",
+      "speaker": "旁白",
+      "text": "我拿出手机扫了扫她的屏幕，伴随着清脆的提示音，好友申请发送成功了。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_09"
+    },
+    {
+      "id": "node_09",
+      "speaker": "糖",
+      "text": "那、那我通过了！这次我真的先回去了！线上联系！",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_10"
+    },
+    {
+      "id": "node_10",
+      "speaker": "旁白",
+      "text": "她紧紧攥着手机，像完成了一项伟大的任务般，如释重负地再次转身跑进了夜色中。",
+      "bg": "便利店",
+      "sprites": {},
+      "options": null,
+      "next": "node_11"
+    },
+    {
+      "id": "node_11",
+      "speaker": "我",
+      "text": "（看着手机屏幕上新增加的联系人，忍不住笑了笑）",
+      "bg": "便利店",
+      "sprites": {},
+      "options": null,
+      "next": "node_12"
+    },
+    {
+      "id": "node_12",
+      "speaker": "旁白",
+      "text": "晚风确实变得温柔了。我将手机收好，迎着夜色走在回家的路上。",
+      "bg": "便利店",
+      "sprites": {},
       "options": null,
       "next": "__title__"
     },
     {
-      "id": "scene_8007_B",
-      "speaker": "？？？",
-      "text": "（眼睛微微睁大，似乎有些意外，随后嘴角忍不住向上牵了一下，声音也变得轻快了些）……嗯，是很巧。",
+      "id": "node_01",
+      "speaker": "旁白",
+      "text": "晚风轻轻吹拂着空旷的街道，我把双手插在口袋里，慢悠悠地往家走去。",
+      "bg": "背景_街道夜景",
+      "sprites": {},
+      "options": null,
+      "next": "node_02"
+    },
+    {
+      "id": "node_02",
+      "speaker": "旁白",
+      "text": "就在这时，口袋里的手机突然传来一阵短暂而急促的震动。",
+      "bg": "背景_街道夜景",
+      "sprites": {},
+      "options": null,
+      "next": "node_03"
+    },
+    {
+      "id": "node_03",
+      "speaker": "我",
+      "text": "（嗯？这么晚了会是谁给我发消息？）",
+      "bg": "背景_街道夜景",
+      "sprites": {},
+      "options": null,
+      "next": "node_04"
+    },
+    {
+      "id": "node_04",
+      "speaker": "旁白",
+      "text": "我拿出手机点亮屏幕，发现是刚刚添加的好友“糖”发来的第一条消息。",
+      "bg": "CG_聊天界面",
+      "sprites": {},
+      "options": null,
+      "next": "node_05"
+    },
+    {
+      "id": "node_05",
+      "speaker": "旁白",
+      "text": "屏幕上没有文字，只是一只像素小兔子正笨拙地探出半个身子挥手的表情包，旁边还配着闪烁的“你好”两个字。",
+      "bg": "CG_聊天界面",
+      "sprites": {},
+      "options": [
+        {
+          "text": "发文字回复关心",
+          "next": "node_06_A"
+        },
+        {
+          "text": "用表情包“反击”",
+          "next": "node_06_B"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "node_06_A",
+      "speaker": "我",
+      "text": "我敲下一行字：“晚上好，这么快就到家了吗？早点休息哦。”，然后点击了发送。",
+      "bg": "CG_聊天界面",
+      "sprites": {},
+      "options": null,
+      "next": "node_07_merge"
+    },
+    {
+      "id": "node_06_B",
+      "speaker": "我",
+      "text": "我在自己贫乏的表情列表里翻找了半天，终于挑了一个小猫疯狂点头的表情包发了过去，以示友好。",
+      "bg": "CG_聊天界面",
+      "sprites": {},
+      "options": null,
+      "next": "node_07_merge"
+    },
+    {
+      "id": "node_07_merge",
+      "speaker": "旁白",
+      "text": "消息发出去后，聊天框顶端立刻显示出“对方正在输入中…”，但闪烁了好一会儿，却又归于平静。",
+      "bg": "背景_街道夜景",
+      "sprites": {},
+      "options": null,
+      "next": "node_08"
+    },
+    {
+      "id": "node_08",
+      "speaker": "旁白",
+      "text": "脑海中不由自主地浮现出她刚才那副紧张到手足无措的模样……",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_09"
+    },
+    {
+      "id": "node_09",
+      "speaker": "我",
+      "text": "（大概是不知道该回什么，现在正抱着手机在床上疯狂纠结吧……）",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_10"
+    },
+    {
+      "id": "node_10",
+      "speaker": "旁白",
+      "text": "想象着那个画面，我忍不住轻笑出声。这种与人建立起全新联系的奇妙感觉，让今晚的夜风显得格外温柔。",
+      "bg": "背景_街道夜景",
+      "sprites": {},
+      "options": null,
+      "next": "node_11"
+    },
+    {
+      "id": "node_11",
+      "speaker": "旁白",
+      "text": "我将手机妥帖地收回口袋，迈着比刚才更加轻快的步伐，继续向家的方向走去。",
+      "bg": "背景_街道夜景",
+      "sprites": {},
+      "options": null,
+      "next": "__title__"
+    },
+    {
+      "id": "node_01_walk",
+      "speaker": "旁白",
+      "text": "晚风吹拂着街道，我继续不紧不慢地朝家的方向走去。",
+      "bg": "背景_街道夜景",
+      "sprites": {},
+      "options": null,
+      "next": "node_02_store"
+    },
+    {
+      "id": "node_02_store",
+      "speaker": "旁白",
+      "text": "走过拐角，那家熟悉的24小时便利店映入眼帘。明亮的招牌灯光在夜色中显得格外温暖。",
+      "bg": "便利店",
+      "sprites": {},
+      "options": null,
+      "next": "node_03_spot"
+    },
+    {
+      "id": "node_03_spot",
+      "speaker": "旁白",
+      "text": "就在便利店旁边的街心花坛处，路灯下蹲着一个熟悉的身影。",
       "bg": "便利店",
       "sprites": {
-        "left": null,
-        "center": "普通",
-        "right": null,
-        "active": "center"
+        "center": "捡东西"
       },
-      "bgm": null,
-      "se": null,
-      "effect": null,
+      "options": null,
+      "next": "node_04_think"
+    },
+    {
+      "id": "node_04_think",
+      "speaker": "我",
+      "text": "（那不是刚刚才像完成重大任务般跑开的糖吗？她怎么还在这里？）",
+      "bg": "便利店",
+      "sprites": {
+        "center": "捡东西"
+      },
+      "options": null,
+      "next": "node_05_options"
+    },
+    {
+      "id": "node_05_options",
+      "speaker": "旁白",
+      "text": "她正蹲在路边，似乎被什么东西绊住了脚步。我该怎么做？",
+      "bg": "便利店",
+      "sprites": {
+        "center": "捡东西"
+      },
+      "options": [
+        {
+          "text": "悄悄靠近看看",
+          "next": "node_06_A"
+        },
+        {
+          "text": "直接出声叫她",
+          "next": "node_06_B"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "node_06_A",
+      "speaker": "我",
+      "text": "（还是别吓到她了，先看看她在干什么吧。）\n我放轻脚步，悄悄走到她身后，发现她正在地上摸索着什么。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "捡东西"
+      },
+      "options": null,
+      "next": "node_07_merge"
+    },
+    {
+      "id": "node_06_B",
+      "speaker": "我",
+      "text": "“糖？你怎么还在这里？”我直接开口喊了她的名字。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "捡东西"
+      },
+      "options": null,
+      "next": "node_07_merge"
+    },
+    {
+      "id": "node_07_merge",
+      "speaker": "旁白",
+      "text": "听到身边的动静，糖像受惊的小兔子一样猛地转过头，手忙脚乱地站了起来。",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_08_excuse"
+    },
+    {
+      "id": "node_08_excuse",
+      "speaker": "糖",
+      "text": "“呜哇！是、是你呀……我、我绝对没有在这里等你或者跟踪你哦！绝对没有！”",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_09_ask"
+    },
+    {
+      "id": "node_09_ask",
+      "speaker": "我",
+      "text": "“我当然知道。你刚才跑得那么急，是不是掉东西了？”",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_10_explain"
+    },
+    {
+      "id": "node_10_explain",
+      "speaker": "糖",
+      "text": "“那个……刚刚跑太快，没注意脚下的台阶绊了一下，包包里的东西撒了一地……”",
+      "bg": "便利店",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_11_help"
+    },
+    {
+      "id": "node_11_help",
+      "speaker": "我",
+      "text": "“光线这么暗，你一个人找太费劲了，我帮你一起找吧。”",
+      "bg": "便利店",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "__title__"
+    },
+    {
+      "id": "node_1",
+      "speaker": "我",
+      "text": "我打着手机的手电筒凑近，却发现地上根本没有什么散落的物品。她正小心翼翼地蹲在那里，手里拿着一小截火腿肠往草丛深处递去。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "捡东西"
+      },
+      "options": null,
+      "next": "node_2"
+    },
+    {
+      "id": "node_2",
+      "speaker": "旁白",
+      "text": "借着微弱的光线，我看到一只瘦小的流浪猫正躲在阴影里，发出细微的“喵呜”声，试探着舔舐她手里的食物。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "捡东西",
+        "right": "立绘_流浪猫"
+      },
+      "options": null,
+      "next": "node_3"
+    },
+    {
+      "id": "node_3",
+      "speaker": "我",
+      "text": "“原来你说的‘掉东西了’，是指把心掉在小猫身上了吗？”我忍不住轻声打趣。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "捡东西",
+        "right": "立绘_流浪猫"
+      },
+      "options": null,
+      "next": "node_4"
+    },
+    {
+      "id": "node_4",
+      "speaker": "旁白",
+      "text": "听到我突然靠近的声音，糖像受惊的小动物一样猛地站了起来，因为起得太急，还踉跄了一下，流浪猫也嗖地一下缩回了草丛深处。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_5"
+    },
+    {
+      "id": "node_5",
+      "speaker": "糖",
+      "text": "“呜哇！你、你怎么走路一点声音都没有！我……我刚刚明明说先回去了，绝对没有故意留在这里等你！”",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_6"
+    },
+    {
+      "id": "node_6",
+      "speaker": "我",
+      "text": "（看着她因为被当场抓包而羞红的脸，结结巴巴极力掩饰的样子，我该作何反应？）",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": [
+        {
+          "text": "摸摸她的头",
+          "next": "node_7_A"
+        },
+        {
+          "text": "顺势蹲下看猫",
+          "next": "node_7_B"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "node_7_A",
+      "speaker": "我",
+      "text": "我忍不住伸手揉了揉她的头发：“明明刚才信誓旦旦地说要赶紧回家，结果却偷偷躲在这里喂猫，真是个不坦率的家伙。”",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_8_A"
+    },
+    {
+      "id": "node_8_A",
+      "speaker": "糖",
+      "text": "糖的脸瞬间涨得通红，连耳根都红透了：“别、别摸我的头啦！我只是路过看到它太可怜了而已……才不是不坦率！”",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_9_merge"
+    },
+    {
+      "id": "node_7_B",
+      "speaker": "我",
+      "text": "我没有拆穿她，而是顺势蹲下身看向草丛：“这小家伙看起来饿坏了，你刚才跑得那么急，就是去便利店给它买吃的了？”",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_8_B"
+    },
+    {
+      "id": "node_8_B",
+      "speaker": "糖",
+      "text": "糖心虚地移开视线，手指绞在一起：“才、才不是特意买的呢！只是碰巧……碰巧包里带有火腿肠而已！”",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_9_merge"
+    },
+    {
+      "id": "node_9_merge",
+      "speaker": "旁白",
+      "text": "看着她这副羞窘交加的样子，我实在不忍心再继续逗她了。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "node_10"
+    },
+    {
+      "id": "node_10",
+      "speaker": "我",
+      "text": "“好好好，都是碰巧的。那现在猫也喂完了，夜这么深，要不要我送你这个‘碰巧’路过的好心人回家？”",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "node_11"
+    },
+    {
+      "id": "node_11",
+      "speaker": "糖",
+      "text": "糖低着头，小声嘟囔了一句什么，然后轻轻点了点头，嘴角却似乎扬起了一抹微不可察的弧度。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "__title__"
+    },
+    {
+      "id": "walk_01",
+      "speaker": "旁白",
+      "text": "流浪猫吃饱喝足后，满意地舔了舔爪子，凑过来亲昵地蹭了蹭糖的裤腿。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "立绘_流浪猫"
+      },
+      "options": null,
+      "next": "walk_02"
+    },
+    {
+      "id": "walk_02",
+      "speaker": "糖",
+      "text": "啊……好痒。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "walk_03"
+    },
+    {
+      "id": "walk_03",
+      "speaker": "我",
+      "text": "看来它很喜欢你呢。好了，时间不早了，我们走吧。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "walk_04"
+    },
+    {
+      "id": "walk_04",
+      "speaker": "旁白",
+      "text": "糖站起身，拍了拍裙摆上的灰尘。我们并肩走在安静的街道上，路灯将两人的影子拉得很长。",
+      "bg": "背景_街道夜景",
+      "sprites": null,
+      "options": null,
+      "next": "walk_05"
+    },
+    {
+      "id": "walk_05",
+      "speaker": "我",
+      "text": "说起来，你家往哪个方向走？",
+      "bg": "背景_街道夜景",
+      "sprites": null,
+      "options": null,
+      "next": "walk_06"
+    },
+    {
+      "id": "walk_06",
+      "speaker": "糖",
+      "text": "穿过前面那个十字路口，再往左拐就到了。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "walk_07"
+    },
+    {
+      "id": "walk_07",
+      "speaker": "我",
+      "text": "这么巧？我也要经过那个路口。看来我们有一段同路了。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "普通"
+      },
+      "options": null,
+      "next": "walk_08"
+    },
+    {
+      "id": "walk_08",
+      "speaker": "旁白",
+      "text": "夜风微凉，气氛突然安静下来。虽然只有脚步声作伴，却并不显得尴尬。（要找点什么话题吗？）",
+      "bg": "背景_街道夜景",
+      "sprites": null,
+      "options": [
+        {
+          "text": "聊聊刚才的流浪猫",
+          "next": "walk_09_cat"
+        },
+        {
+          "text": "开玩笑逗逗她",
+          "next": "walk_09_joke"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "walk_09_cat",
+      "speaker": "我",
+      "text": "你经常来这边喂那只小猫吗？",
+      "bg": "背景_街道夜景",
+      "sprites": null,
+      "options": null,
+      "next": "walk_10_cat"
+    },
+    {
+      "id": "walk_10_cat",
+      "speaker": "糖",
+      "text": "也没有经常啦……只是最近偶尔路过，看它瘦巴巴的，就忍不住带点吃的。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "walk_11_cat"
+    },
+    {
+      "id": "walk_11_cat",
+      "speaker": "我",
+      "text": "原来如此，看来某人不仅是个傲娇，还是个心软的傲娇。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "害羞"
+      },
+      "options": null,
+      "next": "walk_12_merge"
+    },
+    {
+      "id": "walk_09_joke",
+      "speaker": "我",
+      "text": "平时看你天不怕地不怕的，该不会其实很怕黑，所以才勉为其难让我送你吧？",
+      "bg": "背景_街道夜景",
+      "sprites": null,
+      "options": null,
+      "next": "walk_10_joke"
+    },
+    {
+      "id": "walk_10_joke",
+      "speaker": "糖",
+      "text": "谁、谁怕黑了！你再胡说八道，我就把你丢在这里自己走了！",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "立绘_糖_生气"
+      },
+      "options": null,
+      "next": "walk_11_joke"
+    },
+    {
+      "id": "walk_11_joke",
+      "speaker": "旁白",
+      "text": "虽然嘴上这么说，但她并没有加快脚步，依然保持着和我并肩的距离。",
+      "bg": "背景_街道夜景",
+      "sprites": null,
+      "options": null,
+      "next": "walk_12_merge"
+    },
+    {
+      "id": "walk_12_merge",
+      "speaker": "旁白",
+      "text": "不知不觉间，我们已经走到了那个分岔的十字路口。",
+      "bg": "背景_街道夜景",
+      "sprites": null,
+      "options": null,
+      "next": "walk_13"
+    },
+    {
+      "id": "walk_13",
+      "speaker": "糖",
+      "text": "我到了，就送到这里吧。今天……谢谢你。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "立绘_糖_微笑"
+      },
+      "options": null,
+      "next": "walk_14"
+    },
+    {
+      "id": "walk_14",
+      "speaker": "我",
+      "text": "早点休息，明天见。",
+      "bg": "背景_街道夜景",
+      "sprites": {
+        "center": "立绘_糖_微笑"
+      },
+      "options": null,
+      "next": "walk_15"
+    },
+    {
+      "id": "walk_15",
+      "speaker": "旁白",
+      "text": "看着她轻快跑远的背影，我笑了笑，转身走向自己家的方向。",
+      "bg": "背景_街道夜景",
+      "sprites": null,
       "options": null,
       "next": "__title__"
     }
   ]
 }
-
