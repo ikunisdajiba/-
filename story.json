@@ -2,7 +2,7 @@
   "metadata": {
     "title": "糖glagame",
     "subtitle": "第一章",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "author": "制作人"
   },
   "assets": [
@@ -121,7 +121,7 @@
     },
     {
       "id": "scene_8001",
-      "speaker": "男主",
+      "speaker": "？？？",
       "text": "（愣了一下，脸颊迅速泛起微红，眼神飘忽不定地看向旁边的路灯）啊……不、不用了，本来我也没看路。不过……如果你坚持的话……",
       "bg": "便利店",
       "sprites": {
@@ -139,11 +139,11 @@
     {
       "id": "scene_8003",
       "speaker": "旁白",
-      "text": "昏黄的灯光下，你看到他紧张地攥着衣角，原本冷淡拘谨的氛围似乎因为这个小插曲变得有些温和起来。这或许是一段新故事的开始。",
+      "text": "昏黄的灯光下，你看到他紧张地攥着衣角，原本冷淡拘谨的氛围似乎因为这个小插曲变得有些温和起来。于是，你们一前一后重新走进了便利店。",
       "bg": "便利店",
       "sprites": {
         "left": null,
-        "center": "害羞",
+        "center": "普通",
         "right": null,
         "active": "center"
       },
@@ -151,7 +151,7 @@
       "se": null,
       "effect": null,
       "options": null,
-      "next": "__title__"
+      "next": "scene_8004"
     },
     {
       "id": "scene_8002",
@@ -169,6 +169,101 @@
       "effect": null,
       "options": null,
       "next": "__title__"
+    },
+    {
+      "id": "scene_8004",
+      "speaker": "旁白",
+      "text": "伴随着“叮咚”的欢迎光临提示音，你带着他走到了摆满饮料的冷柜前。冷气扑面而来，稍微缓解了刚才的局促感。",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "普通",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "scene_8005"
+    },
+    {
+      "id": "scene_8005",
+      "speaker": "我",
+      "text": "（回头看他，尽量让语气显得自然）你想喝什么？碳酸饮料还是茶饮？或者……咖啡？",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "普通",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "scene_8006"
+    },
+    {
+      "id": "scene_8006",
+      "speaker": "？？？",
+      "text": "（视线在花花绿绿的饮料瓶上扫过，最后停留在角落里，声音小得像蚊子）……想要那个，草莓牛奶。",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "害羞",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": [
+        {
+          "text": "（忍不住笑出声）草莓牛奶？看不出来，你还挺喜欢甜食的呀？",
+          "next": "scene_8007_A"
+        },
+        {
+          "text": "（直接从冰柜里拿出两盒）好巧，这也是我最喜欢喝的。",
+          "next": "scene_8007_B"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "scene_8007_A",
+      "speaker": "？？？",
+      "text": "（被人戳中心思，脸颊更红了，猛地移开视线看向别处）咳……只是刚好想补充一点糖分而已，不可以吗？",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "害羞",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "__title__"
+    },
+    {
+      "id": "scene_8007_B",
+      "speaker": "？？？",
+      "text": "（眼睛微微睁大，似乎有些意外，随后嘴角忍不住向上牵了一下，声音也变得轻快了些）……嗯，是很巧。",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "普通",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "__title__"
     }
   ]
 }
+
