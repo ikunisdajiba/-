@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "title": "我的游戏",
+    "title": "糖glagame",
     "subtitle": "第一章",
     "version": "1.0.0",
     "author": "制作人"
@@ -42,7 +42,24 @@
         "left": null,
         "center": "晕倒",
         "right": null,
-        "active": null
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "scene_7767_copy_045"
+    },
+    {
+      "id": "scene_7767_copy_045",
+      "speaker": "我",
+      "text": "（慌忙扶住饮料，弯腰想去捡零食，声音磕磕绊绊）对、对不起！我没看路，撞疼你了吧……",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "普通",
+        "right": null,
+        "active": "center"
       },
       "bgm": null,
       "se": null,
