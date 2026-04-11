@@ -2,7 +2,7 @@
   "metadata": {
     "title": "糖glagame",
     "subtitle": "第一章",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "author": "制作人"
   },
   "assets": [
@@ -96,13 +96,73 @@
     {
       "id": "scene_6721",
       "speaker": "旁白",
-      "text": "对方把捡起来的薯片递给你，两人手指又碰到一起，同时触电般缩回手，空气瞬间凝固，尴尬到能听见风吹树叶的声音）",
+      "text": "（对方把捡起来的薯片递给你，两人手指又碰到一起，同时触电般缩回手，空气瞬间凝固，尴尬到能听见风吹树叶的声音）",
       "bg": "便利店",
       "sprites": {
         "left": null,
         "center": "普通",
         "right": null,
-        "active": null
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": [
+        {
+          "text": "（轻咳一声打破尴尬）那个……为了赔罪，我请你喝点什么吧？",
+          "next": "scene_8001"
+        },
+        {
+          "text": "（脸红到耳根，抓起饮料就跑）抱歉我突然想起还有急事我先走了！",
+          "next": "scene_8002"
+        }
+      ],
+      "next": null
+    },
+    {
+      "id": "scene_8001",
+      "speaker": "男主",
+      "text": "（愣了一下，脸颊迅速泛起微红，眼神飘忽不定地看向旁边的路灯）啊……不、不用了，本来我也没看路。不过……如果你坚持的话……",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "害羞",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "scene_8003"
+    },
+    {
+      "id": "scene_8003",
+      "speaker": "旁白",
+      "text": "昏黄的灯光下，你看到他紧张地攥着衣角，原本冷淡拘谨的氛围似乎因为这个小插曲变得有些温和起来。这或许是一段新故事的开始。",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "害羞",
+        "right": null,
+        "active": "center"
+      },
+      "bgm": null,
+      "se": null,
+      "effect": null,
+      "options": null,
+      "next": "__title__"
+    },
+    {
+      "id": "scene_8002",
+      "speaker": "旁白",
+      "text": "坏结局：落荒而逃\n你像一阵风似的逃离了现场，留下他在原地看着你的背影发呆。你因为过度紧张，错过了一个认识他的好机会。",
+      "bg": "便利店",
+      "sprites": {
+        "left": null,
+        "center": "普通",
+        "right": null,
+        "active": "center"
       },
       "bgm": null,
       "se": null,
